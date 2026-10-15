@@ -384,3 +384,7 @@ table.table { width: 100%; border-collapse: collapse; font-size: .9rem; }
   .main { margin: 0; }
   .card { box-shadow: none; border: 0; }
 }
+@media (max-width: 640px) {
+  #topbar-stats { flex-wrap: nowrap; gap: 6px; }
+  .xp-pill { font-size: .75rem; padding: 4px 8px; }
+}
