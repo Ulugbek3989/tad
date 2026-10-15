@@ -1,0 +1,238 @@
+{
+  "format": "tad-course-v1",
+  "course": {
+    "title": "Informatika va axborot texnologiyalari (namuna kurs)",
+    "code": "IAT-101",
+    "description": "Platformaning barcha imkoniyatlarini ko'rsatuvchi namuna kurs: slaydlar, testlar, interaktiv mashg'ulotlar, laboratoriya, amaliy ish, keys va interaktiv metodlar.",
+    "color": "#4f46e5",
+    "objectives": [
+      "Axborot, uning o'lchov birliklari va xossalarini tushunish",
+      "Kompyuter arxitekturasi va dasturiy ta'minot turlarini farqlash",
+      "Algoritmlar tuzish va ularni amalda qo'llash",
+      "Elektron jadvallar bilan amaliy ishlash ko'nikmasini egallash"
+    ],
+    "syllabus": "## Fanning maqsadi\nTalabalarda axborot texnologiyalaridan samarali foydalanish, algoritmik fikrlash va raqamli savodxonlik kompetensiyalarini shakllantirish.\n\n## Fanning vazifalari\n- Axborot va axborot jarayonlari haqida nazariy bilim berish;\n- Kompyuter tizimlari tuzilishini o'rgatish;\n- Algoritmlash va dasturlash asoslarini egallash;\n- Ofis dasturlarida amaliy ishlash ko'nikmasini hosil qilish.\n\n## Soatlar taqsimoti\n| Mashg'ulot turi | Soat |\n|---|---|\n| Ma'ruza | 30 |\n| Amaliy mashg'ulot | 30 |\n| Laboratoriya | 30 |\n| Mustaqil ta'lim | 90 |\n\n## Baholash\n- Joriy nazorat — 40 ball\n- Oraliq nazorat — 30 ball\n- Yakuniy nazorat — 30 ball",
+    "literature": "1. Aripov M., va boshq. *Informatika. Axborot texnologiyalari.* — T., 2019.\n2. Brookshear J.G. *Computer Science: An Overview.* — Pearson, 2019.\n3. https://www.khanacademy.org/computing"
+  },
+  "modules": [
+    {
+      "title": "1-bo'lim. Axborot va kompyuter asoslari",
+      "description": "Axborot tushunchasi, o'lchov birliklari, kompyuter arxitekturasi.",
+      "lessons": [
+        {
+          "title": "Axborot va uning o'lchov birliklari",
+          "summary": "Axborot tushunchasi, xossalari, bit va bayt, axborot hajmini hisoblash.",
+          "kind": "lecture",
+          "hours": 2,
+          "methods": ["brainstorm", "cluster", "blitz"],
+          "content": "# Axborot va uning o'lchov birliklari\n\n## 1. Axborot tushunchasi\n**Axborot** — manbalari va taqdim etilish shaklidan qat'i nazar, shaxslar, predmetlar, faktlar, voqealar, hodisalar va jarayonlar to'g'risidagi ma'lumotlar.\n\n## 2. Axborotning xossalari\n- **Ishonchlilik** — haqiqiy holatni aks ettiradi;\n- **To'liqlik** — qaror qabul qilish uchun yetarli;\n- **Dolzarblik** — ayni vaqtda muhim;\n- **Foydalilik** — muayyan masalani hal qilishga yordam beradi;\n- **Tushunarlilik** — iste'molchi tilida ifodalangan.\n\n## 3. O'lchov birliklari\nAxborotning eng kichik o'lchov birligi — **bit** (0 yoki 1).\n\n| Birlik | Qiymati |\n|---|---|\n| 1 bayt | 8 bit |\n| 1 Kbayt | 1024 bayt |\n| 1 Mbayt | 1024 Kbayt |\n| 1 Gbayt | 1024 Mbayt |\n| 1 Tbayt | 1024 Gbayt |\n\n> **Misol:** 64 ta belgidan iborat alifbodagi bitta belgi $\\log_2 64 = 6$ bit axborot olib keladi.\n\n## 4. Xulosa\nAxborot — zamonaviy jamiyatning asosiy resursi. Uni to'g'ri o'lchash va baholash raqamli savodxonlikning asosidir.",
+          "activities": [
+            {
+              "type": "slides",
+              "title": "Taqdimot: Axborot va o'lchov birliklari",
+              "max_points": 0,
+              "content": {
+                "slides": [
+                  { "title": "Axborot va uning o'lchov birliklari", "body": "**1-mavzu**\n\nInformatika va axborot texnologiyalari", "notes": "Darsni aqliy hujum bilan boshlang: \"Axborot nima?\"" },
+                  { "title": "Axborot nima?", "body": "- Atrof-olam haqidagi **ma'lumotlar**\n- Inson, texnika va tabiatda uzatiladi\n- Qayta ishlanadi, saqlanadi, uzatiladi", "notes": "" },
+                  { "title": "Axborotning xossalari", "body": "1. Ishonchlilik\n2. To'liqlik\n3. Dolzarblik\n4. Foydalilik\n5. Tushunarlilik", "notes": "Har bir xossaga hayotiy misol so'rang." },
+                  { "title": "O'lchov birliklari", "body": "| Birlik | Qiymat |\n|---|---|\n| 1 bayt | 8 bit |\n| 1 Kb | 1024 bayt |\n| 1 Mb | 1024 Kb |\n| 1 Gb | 1024 Mb |", "notes": "" },
+                  { "title": "Xulosa", "body": "Axborot — **asosiy resurs**.\n\n❓ Savollar?", "notes": "Blits-so'rovga o'ting." }
+                ]
+              }
+            },
+            {
+              "type": "board",
+              "title": "Aqliy hujum: Kundalik hayotda axborot",
+              "instructions": "Kundalik hayotingizda qanday axborot manbalaridan foydalanasiz? Har bir fikringizni alohida yozing.",
+              "max_points": 5,
+              "content": { "method": "brainstorm", "prompt": "Kundalik hayotda qanday axborot manbalaridan foydalanasiz?", "columns": ["G'oyalar"], "anonymous": false }
+            },
+            {
+              "type": "flashcards",
+              "title": "Kartochkalar: Asosiy atamalar",
+              "max_points": 0,
+              "content": {
+                "cards": [
+                  { "front": "Bit", "back": "Axborotning eng kichik o'lchov birligi (0 yoki 1)" },
+                  { "front": "Bayt", "back": "8 bitdan iborat axborot birligi" },
+                  { "front": "1 Kbayt", "back": "1024 bayt" },
+                  { "front": "Axborotning dolzarbligi", "back": "Axborotning ayni vaqtda muhim va kerakli ekanligi" },
+                  { "front": "Axborotning ishonchliligi", "back": "Axborotning haqiqiy holatni aks ettirishi" }
+                ]
+              }
+            },
+            {
+              "type": "quiz",
+              "title": "Blits-test: O'lchov birliklari",
+              "instructions": "Har bir savolga javob bering. Vaqt: 5 daqiqa.",
+              "max_points": 10,
+              "attempts": 3,
+              "content": {
+                "time_limit_min": 5,
+                "shuffle": true,
+                "questions": [
+                  { "type": "single", "text": "1 baytda necha bit bor?", "options": ["4", "8", "16", "1024"], "answer": 1, "explanation": "1 bayt = 8 bit." },
+                  { "type": "single", "text": "1 Mbayt necha Kbaytga teng?", "options": ["1000", "512", "1024", "2048"], "answer": 2, "explanation": "Ikkilik tizimda 1 Mbayt = 1024 Kbayt." },
+                  { "type": "multiple", "text": "Quyidagilardan qaysilari axborotning xossalari?", "options": ["Ishonchlilik", "Dolzarblik", "Og'irlik", "To'liqlik"], "answer": [0, 1, 3], "explanation": "Og'irlik — axborot xossasi emas." },
+                  { "type": "truefalse", "text": "Bit — axborotning eng kichik o'lchov birligi.", "answer": true, "explanation": "To'g'ri: bit 0 yoki 1 qiymat qabul qiladi." },
+                  { "type": "numeric", "text": "2 Kbayt necha baytga teng?", "answer": 2048, "tolerance": 0, "explanation": "2 × 1024 = 2048 bayt." },
+                  { "type": "short", "text": "8 bitdan iborat birlik qanday nomlanadi?", "answer": ["bayt", "byte"], "explanation": "Bayt (byte)." }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "title": "Kompyuter arxitekturasi",
+          "summary": "Fon Neyman prinsiplari, kompyuterning asosiy qurilmalari va ularning vazifalari.",
+          "kind": "seminar",
+          "hours": 2,
+          "methods": ["venn", "jigsaw", "insert"],
+          "content": "# Kompyuter arxitekturasi\n\n## Fon Neyman prinsiplari\n1. **Ikkilik kodlash** — barcha ma'lumotlar ikkilik kodda;\n2. **Dastur bilan boshqarish** — dastur buyruqlar ketma-ketligidan iborat;\n3. **Xotiraning bir jinsliligi** — dastur va ma'lumotlar bitta xotirada;\n4. **Xotira manzillanishi** — har bir yacheyka o'z manziliga ega.\n\n## Asosiy qurilmalar\n- **Protsessor (CPU)** — hisoblash va boshqarish;\n- **Tezkor xotira (RAM)** — vaqtinchalik ma'lumotlar;\n- **Doimiy xotira (SSD/HDD)** — uzoq muddatli saqlash;\n- **Kiritish qurilmalari** — klaviatura, sichqoncha, skaner;\n- **Chiqarish qurilmalari** — monitor, printer, karnay.",
+          "activities": [
+            {
+              "type": "matching",
+              "title": "Qurilma va uning vazifasi",
+              "instructions": "Har bir qurilmani uning vazifasi bilan moslang.",
+              "max_points": 10,
+              "content": {
+                "pairs": [
+                  { "left": "Protsessor", "right": "Hisoblash va boshqarish" },
+                  { "left": "RAM", "right": "Vaqtinchalik ma'lumotlarni saqlash" },
+                  { "left": "SSD", "right": "Ma'lumotlarni uzoq muddat saqlash" },
+                  { "left": "Monitor", "right": "Axborotni tasvir ko'rinishida chiqarish" },
+                  { "left": "Klaviatura", "right": "Matnli axborotni kiritish" }
+                ]
+              }
+            },
+            {
+              "type": "classify",
+              "title": "Kiritish va chiqarish qurilmalari",
+              "instructions": "Qurilmalarni tegishli guruhga joylashtiring.",
+              "max_points": 10,
+              "content": {
+                "categories": [
+                  { "name": "Kiritish qurilmalari", "items": ["Klaviatura", "Sichqoncha", "Skaner", "Mikrofon"] },
+                  { "name": "Chiqarish qurilmalari", "items": ["Monitor", "Printer", "Karnay", "Proyektor"] }
+                ]
+              }
+            },
+            {
+              "type": "board",
+              "title": "Venn diagrammasi: RAM va SSD",
+              "instructions": "RAM va SSD xotiralarini solishtiring: har biriga xos va umumiy jihatlarni yozing.",
+              "max_points": 5,
+              "content": { "method": "venn", "prompt": "RAM va SSD: o'xshash va farqli jihatlar", "columns": ["RAM ga xos", "Umumiy jihatlar", "SSD ga xos"] }
+            },
+            {
+              "type": "fillblank",
+              "title": "Fon Neyman prinsiplari",
+              "max_points": 10,
+              "content": {
+                "text": "Fon Neyman prinsipiga ko'ra, barcha ma'lumotlar [[ikkilik]] kodda ifodalanadi. Dastur va ma'lumotlar [[bitta/yagona]] xotirada saqlanadi. Hisoblash va boshqarishni [[protsessor/CPU]] amalga oshiradi. Vaqtinchalik ma'lumotlar [[tezkor xotira/RAM/operativ xotira]] da saqlanadi.",
+                "word_bank": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "2-bo'lim. Algoritmlar va amaliy dasturlar",
+      "description": "Algoritm tushunchasi, uning xossalari va elektron jadvallar bilan ishlash.",
+      "lessons": [
+        {
+          "title": "Algoritm va uning xossalari",
+          "summary": "Algoritm tushunchasi, xossalari, tasvirlash usullari va amaliy masalalar.",
+          "kind": "practical",
+          "hours": 2,
+          "methods": ["problem", "tps", "fsmu"],
+          "content": "# Algoritm va uning xossalari\n\n**Algoritm** — qo'yilgan masalani yechish uchun bajariluvchining aniq, chekli qadamlar ketma-ketligi.\n\n## Algoritm xossalari\n- **Diskretlik** — alohida qadamlarga bo'linadi;\n- **Aniqlik** — har bir qadam bir ma'noli;\n- **Tushunarlilik** — bajaruvchiga tushunarli;\n- **Natijaviylik** — chekli qadamda natijaga olib keladi;\n- **Ommaviylik** — bir turdagi masalalar uchun qo'llanadi.\n\n## Tasvirlash usullari\n1. So'zli (tabiiy til);\n2. Blok-sxema;\n3. Psevdokod;\n4. Dasturlash tili.",
+          "activities": [
+            {
+              "type": "ordering",
+              "title": "Choy damlash algoritmi",
+              "instructions": "Qadamlarni to'g'ri ketma-ketlikda joylashtiring.",
+              "max_points": 10,
+              "content": {
+                "prompt": "Choy damlash algoritmini tiklang",
+                "items": ["Choynakka suv quyish", "Suvni qaynatish", "Choynakni qaynoq suv bilan chayish", "Choy solish", "Qaynoq suv quyish", "5 daqiqa dimlash"]
+              }
+            },
+            {
+              "type": "practical",
+              "title": "Amaliy ish: Kvadrat tenglama algoritmi",
+              "instructions": "Topshiriqni bajaring va javobingizni batafsil yozing.",
+              "max_points": 20,
+              "rubric": "1) Algoritm to'g'ri va to'liq (diskriminant hisoblanadi, uchta holat ko'rib chiqiladi) — 10 ball; 2) Algoritm xossalariga mosligi asoslangan — 5 ball; 3) Misol bilan tekshirilgan — 5 ball.",
+              "content": {
+                "task": "ax² + bx + c = 0 kvadrat tenglamani yechish algoritmini **so'zli usulda** yoki **psevdokodda** tuzing.\n\n- Barcha holatlarni (D > 0, D = 0, D < 0) ko'rib chiqing;\n- Algoritm qaysi xossalarga ega ekanini izohlang;\n- Algoritmni 1 ta misolda tekshiring.",
+                "hints": ["Avval diskriminantni hisoblang: D = b² − 4ac", "a = 0 bo'lgan holatni ham unutmang"],
+                "reference_answer": "1. a, b, c ni kiritish. 2. Agar a = 0 bo'lsa — tenglama chiziqli: x = −c/b. 3. D = b² − 4ac. 4. Agar D > 0: x1 = (−b + √D)/(2a), x2 = (−b − √D)/(2a). 5. Agar D = 0: x = −b/(2a). 6. Agar D < 0: haqiqiy ildiz yo'q. 7. Natijani chiqarish. Misol: x² − 5x + 6 = 0 → D = 1, x1 = 3, x2 = 2."
+              }
+            },
+            {
+              "type": "board",
+              "title": "FSMU: Algoritmsiz hayot mumkinmi?",
+              "instructions": "FSMU texnologiyasi asosida fikringizni bildiring.",
+              "max_points": 5,
+              "content": { "method": "fsmu", "prompt": "Kundalik hayotimizni algoritmlarsiz tasavvur qilish mumkinmi?", "columns": ["F — Fikr", "S — Sabab", "M — Misol", "U — Umumlashtirish"] }
+            }
+          ]
+        },
+        {
+          "title": "Elektron jadvallar: formulalar va diagrammalar",
+          "summary": "Excel/Google Sheets: formulalar, funksiyalar, diagramma qurish. Laboratoriya ishi va keys.",
+          "kind": "lab",
+          "hours": 4,
+          "methods": ["case_study", "swot", "exit_ticket"],
+          "content": "# Elektron jadvallar\n\nElektron jadval — ma'lumotlarni jadval ko'rinishida saqlash, hisoblash va tahlil qilish uchun dastur (MS Excel, Google Sheets, LibreOffice Calc).\n\n## Asosiy tushunchalar\n- **Yacheyka** — ustun va satr kesishmasi (masalan, `B3`);\n- **Formula** — `=` belgisi bilan boshlanadi: `=A1+B1`;\n- **Funksiyalar:** `SUM`, `AVERAGE`, `MAX`, `MIN`, `IF`, `COUNTIF`;\n- **Absolyut murojaat:** `$A$1`.\n\n## Diagramma turlari\n- Ustunli — kategoriyalarni solishtirish;\n- Chiziqli — vaqt bo'yicha o'zgarish;\n- Doiraviy — ulushlar.",
+          "activities": [
+            {
+              "type": "lab",
+              "title": "Laboratoriya ishi №1: Talabalar reytingi jadvali",
+              "instructions": "Laboratoriya ishini bosqichma-bosqich bajaring, natijalarni yozing va nazorat savollariga javob bering.",
+              "max_points": 30,
+              "rubric": "Bosqichlar to'liq bajarilgan — 10 ball; formulalar to'g'ri yozilgan (SUM, AVERAGE, IF) — 10 ball; nazorat savollariga to'g'ri javob — 5 ball; xulosa asosli — 5 ball.",
+              "content": {
+                "objective": "Elektron jadvalda formulalar va funksiyalar yordamida talabalar reytingini hisoblash hamda diagramma qurish.",
+                "equipment": ["Kompyuter", "MS Excel yoki Google Sheets"],
+                "theory": "`SUM(A1:A5)` — yig'indi; `AVERAGE` — o'rtacha; `IF(shart; rost; yolg'on)` — shartli funksiya.",
+                "steps": [
+                  { "title": "Jadval tuzish", "body": "A ustunga 5 ta talaba F.I.Sh., B–D ustunlarga 3 ta fan bo'yicha ballarni kiriting." },
+                  { "title": "Yig'indi", "body": "E ustunda `=SUM(B2:D2)` formulasi bilan umumiy ballni hisoblang." },
+                  { "title": "O'rtacha", "body": "F ustunda `=AVERAGE(B2:D2)` bilan o'rtacha ballni toping." },
+                  { "title": "Baho", "body": "G ustunda `=IF(F2>=86;\"A'lo\";IF(F2>=71;\"Yaxshi\";\"Qoniqarli\"))` formulasini qo'llang." },
+                  { "title": "Diagramma", "body": "Talabalar umumiy ballari bo'yicha ustunli diagramma quring." }
+                ],
+                "questions": ["Nisbiy va absolyut murojaatning farqi nimada?", "IF funksiyasi qanday ishlaydi?", "Qaysi hollarda doiraviy diagramma qo'llaniladi?"],
+                "reference_answer": "Nisbiy murojaat (A1) formulani nusxalaganda o'zgaradi, absolyut ($A$1) o'zgarmaydi. IF shartni tekshiradi va rost bo'lsa birinchi, aks holda ikkinchi qiymatni qaytaradi. Doiraviy diagramma butunning qismlari (ulushlar)ni ko'rsatish uchun."
+              }
+            },
+            {
+              "type": "case",
+              "title": "Keys: Kichik do'kon hisobi",
+              "instructions": "Keysni o'qing, muammoni tahlil qiling va yechim taklif qiling.",
+              "max_points": 25,
+              "rubric": "Muammo to'g'ri aniqlangan — 5; yechim asoslangan va amaliy — 10; elektron jadval imkoniyatlari to'g'ri qo'llangan — 5; xulosa va tavsiyalar — 5.",
+              "content": {
+                "scenario": "Dilnoza opa mahallada kichik oziq-ovqat do'koni ochdi. Har kuni 40–60 xil mahsulot sotiladi. Hozircha barcha hisob **daftarda** yuritiladi. Oy oxirida u:\n\n- qaysi mahsulot ko'proq foyda keltirganini bilmaydi;\n- ombordagi qoldiqni aniqlashga 2 kun sarflaydi;\n- ba'zi mahsulotlar muddati o'tib, isrof bo'lmoqda.\n\nDilnoza opa sizdan maslahat so'radi.",
+                "questions": ["Asosiy muammolarni aniqlang.", "Elektron jadval yordamida hisobni qanday tashkil qilasiz? (ustunlar, formulalar)", "Qaysi funksiyalar va diagrammalar foydali bo'ladi?", "Yechimingizning SWOT-tahlilini qisqacha keltiring."],
+                "reference_answer": "Muammolar: hisobning qo'lda yuritilishi, tahlil yo'qligi, qoldiq nazorati yo'qligi. Yechim: Mahsulot, kirim, chiqim, qoldiq (=kirim-chiqim), tannarx, sotuv narxi, foyda (=(sotuv-tannarx)*chiqim), yaroqlilik muddati ustunlari; SUMIF, COUNTIF, shartli formatlash (muddati yaqinlashganlar qizil), ustunli diagramma — foyda bo'yicha. SWOT: kuchli — arzon, tez; zaif — o'rganish kerak; imkoniyat — keyinchalik POS tizimi; tahdid — ma'lumot yo'qolishi (zaxira nusxa kerak)."
+              }
+            },
+            {
+              "type": "essay",
+              "title": "Refleksiya: Chiqish chiptasi (3-2-1)",
+              "instructions": "3 ta yangi bilib olgan narsangiz, 2 ta qiziqarli fakt va 1 ta savolingizni yozing.",
+              "max_points": 5,
+              "rubric": "3-2-1 tuzilmasiga rioya qilingan, fikrlar mavzuga oid va aniq.",
+              "content": { "prompt": "3 — bilib oldim; 2 — qiziqarli; 1 — savolim", "min_words": 30 }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

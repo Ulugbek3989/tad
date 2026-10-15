@@ -1,0 +1,17 @@
+{
+  "name": "tad-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Fanni o'qitish uchun interaktiv ta'lim platformasi (Cloudflare Workers + D1 + AI)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply tad-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply tad-db --remote",
+    "check": "node --check src/index.js && for f in src/lib/*.js src/routes/*.js src/data/*.js public/js/*.js public/js/views/*.js; do node --check \"$f\" || exit 1; done"
+  },
+  "devDependencies": {
+    "wrangler": "4.151.0"
+  }
+}

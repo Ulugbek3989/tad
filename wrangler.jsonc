@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tad-platform",
+  "main": "src/index.js",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // Statik frontend (public/) — /api/* so'rovlari Worker'ga boradi, qolganlari SPA
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // D1 ma'lumotlar bazasi: `npx wrangler d1 create tad-db` buyrug'i bergan
+  // database_id qiymatini shu yerga qo'ying.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tad-db",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Cloudflare Workers AI — baholash, tavsiyalar va AI-yordamchi uchun
+  "ai": { "binding": "AI" },
+
+  "vars": {
+    "APP_NAME": "TAD Ta'lim platformasi",
+    // Workers AI modeli (ANTHROPIC_API_KEY berilmagan bo'lsa ishlatiladi)
+    "AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    // ANTHROPIC_API_KEY maxfiy kaliti o'rnatilsa, shu Claude modeli ishlatiladi
+    "CLAUDE_MODEL": "claude-sonnet-5-5"
+  }
+}

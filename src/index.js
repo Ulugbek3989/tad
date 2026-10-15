@@ -1,0 +1,54 @@
+import { Router } from './lib/router.js';
+import { json, HttpError } from './lib/http.js';
+import { loadUser, requireTeacher } from './lib/auth.js';
+import authRoutes from './routes/auth.js';
+import courseRoutes, { importCourse } from './routes/courses.js';
+import learningRoutes from './routes/learning.js';
+import groupRoutes from './routes/groups.js';
+import teachingRoutes from './routes/teaching.js';
+import aiRoutes from './routes/ai.js';
+import dashboardRoutes from './routes/dashboard.js';
+import sampleCourse from '../sample/sample-course.json';
+
+const router = new Router();
+// Namuna kurs (static marshrut dinamik /api/courses/:id dan oldin turishi kerak)
+router.post('/api/courses/sample', async (ctx) => {
+  const u = requireTeacher(ctx);
+  return json({ id: await importCourse(ctx.env, sampleCourse, u.id) }, 201);
+});
+router.get('/api/courses/template', async () => json(sampleCourse));
+[authRoutes, courseRoutes, learningRoutes, groupRoutes, teachingRoutes, aiRoutes, dashboardRoutes].forEach((register) => register(router));
+router.get('/api/health', async (ctx) => json({ ok: true, app: ctx.env.APP_NAME || 'TAD' }));
+
+const MUTATING = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
+
+async function handleApi(req, env, execCtx) {
+  const url = new URL(req.url);
+  // CSRF himoyasi: o'zgartiruvchi so'rovlar JSON bo'lishi va boshqa domendan kelmasligi kerak
+  if (MUTATING.has(req.method)) {
+    const origin = req.headers.get('origin');
+    if (origin && new URL(origin).host !== url.host) return json({ error: "Boshqa domendan so'rov taqiqlangan" }, 403);
+    const ct = req.headers.get('content-type') || '';
+    if (req.method !== 'DELETE' && !ct.includes('application/json')) return json({ error: 'Content-Type: application/json kerak' }, 415);
+  }
+  const m = router.match(req.method, url.pathname);
+  if (!m.handler) return json({ error: m.pathMatched ? 'Usul qo\'llab-quvvatlanmaydi' : 'API topilmadi' }, m.pathMatched ? 405 : 404);
+  const ctx = { req, env, url, params: m.params, user: await loadUser(env, req), waitUntil: (p) => execCtx.waitUntil(p) };
+  return m.handler(ctx);
+}
+
+export default {
+  async fetch(req, env, execCtx) {
+    const url = new URL(req.url);
+    if (url.pathname.startsWith('/api/')) {
+      try {
+        return await handleApi(req, env, execCtx);
+      } catch (e) {
+        if (e instanceof HttpError) return json({ error: e.message }, e.status);
+        console.error(e);
+        return json({ error: 'Serverda kutilmagan xatolik' }, 500);
+      }
+    }
+    return env.ASSETS.fetch(req);
+  },
+};
