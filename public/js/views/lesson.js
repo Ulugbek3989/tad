@@ -4,6 +4,8 @@ import { typeIcon, typeName, LESSON_KINDS } from '../types.js';
 import { renderActivity } from './activities.js';
 import { setTutorContext } from './tutor.js';
 
+const short = (t, n = 42) => (t.length > n ? t.slice(0, n - 1) + '…' : t);
+
 let methodsCache = null;
 export async function getMethods() {
   if (!methodsCache) methodsCache = await api.get('/api/methods');
@@ -56,7 +58,7 @@ export async function lessonView(view, ctx) {
       const firstAct = activities[0];
       setHTML(inner, html`<div class="prose">${md(lesson.content)}</div>
         ${firstAct ? html`<hr><div class="row between"><span class="muted">Ma'ruzani o'qib bo'ldingizmi? Endi mashg'ulotlarga o'ting.</span>
-          <button class="btn primary" data-act="${firstAct.id}">${typeIcon(firstAct.type)} ${firstAct.title} →</button></div>` : ''}`);
+          <button class="btn primary" data-act="${firstAct.id}">${typeIcon(firstAct.type)} ${short(firstAct.title)} →</button></div>` : ''}`);
       return;
     }
     const act = activities.find((a) => a.id === current);
@@ -71,8 +73,8 @@ export async function lessonView(view, ctx) {
     inner.append(head, body, foot);
     renderActivity(body, act, { onResult: () => setHTML(side, sideItems()) });
     setHTML(foot, html`<hr><div class="row between">
-      ${idx > 0 ? html`<button class="btn" data-act="${activities[idx - 1].id}">← ${activities[idx - 1].title}</button>` : hasLecture ? html`<button class="btn" data-act="lecture">← Ma'ruza</button>` : html`<span></span>`}
-      ${nextAct ? html`<button class="btn primary" data-act="${nextAct.id}">${nextAct.title} →</button>` : next ? html`<a class="btn primary" href="#/lessons/${next.id}">Keyingi dars: ${next.title} →</a>` : html`<a class="btn success" href="#/courses/${course.id}">🎉 Kursga qaytish</a>`}
+      ${idx > 0 ? html`<button class="btn" data-act="${activities[idx - 1].id}">← ${short(activities[idx - 1].title)}</button>` : hasLecture ? html`<button class="btn" data-act="lecture">← Ma'ruza</button>` : html`<span></span>`}
+      ${nextAct ? html`<button class="btn primary" data-act="${nextAct.id}">${short(nextAct.title)} →</button>` : next ? html`<a class="btn primary" href="#/lessons/${next.id}">Keyingi dars: ${short(next.title)} →</a>` : html`<a class="btn success" href="#/courses/${course.id}">🎉 Kursga qaytish</a>`}
     </div>`);
   };
   on(view, 'click', '[data-act]', (e, b) => {

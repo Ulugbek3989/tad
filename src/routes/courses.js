@@ -26,7 +26,7 @@ function lessonFields(b, partial = false) {
   if (b.summary !== undefined) f.summary = str(b.summary, { max: 2000 });
   if (b.content !== undefined) f.content = str(b.content, { max: 300000 });
   if (b.methods !== undefined) f.methods = JSON.stringify(Array.isArray(b.methods) ? b.methods.map(String) : []);
-  if (b.hours !== undefined) f.hours = Number(b.hours) || 2;
+  if (b.hours !== undefined) f.hours = Number.isFinite(Number(b.hours)) ? Math.max(0, Number(b.hours)) : 2;
   if (b.kind !== undefined) f.kind = LESSON_KINDS.includes(b.kind) ? b.kind : 'lecture';
   return f;
 }

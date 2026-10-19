@@ -9,9 +9,32 @@ import teachingRoutes from './routes/teaching.js';
 import aiRoutes from './routes/ai.js';
 import dashboardRoutes from './routes/dashboard.js';
 import sampleCourse from '../sample/sample-course.json';
+import tadbirkorlik from '../courses/tadbirkorlik-asoslari.json';
+
+// Platformaga o'rnatilgan tayyor kurslar katalogi
+const CATALOG = {
+  'tadbirkorlik-asoslari': tadbirkorlik,
+  namuna: sampleCourse,
+};
 
 const router = new Router();
-// Namuna kurs (static marshrut dinamik /api/courses/:id dan oldin turishi kerak)
+// Statik marshrutlar dinamik /api/courses/:id dan oldin turishi kerak
+router.get('/api/courses/catalog', async (ctx) => {
+  requireTeacher(ctx);
+  return json({
+    courses: Object.entries(CATALOG).map(([key, c]) => {
+      const lessons = c.modules.flatMap((m) => m.lessons);
+      return { key, title: c.course.title, code: c.course.code, description: c.course.description, color: c.course.color,
+        modules: c.modules.length, lessons: lessons.length, activities: lessons.reduce((n, l) => n + (l.activities || []).length, 0) };
+    }),
+  });
+});
+router.post('/api/courses/catalog/:key', async (ctx) => {
+  const u = requireTeacher(ctx);
+  const data = CATALOG[ctx.params.key];
+  if (!data) return json({ error: 'Kurs topilmadi' }, 404);
+  return json({ id: await importCourse(ctx.env, data, u.id) }, 201);
+});
 router.post('/api/courses/sample', async (ctx) => {
   const u = requireTeacher(ctx);
   return json({ id: await importCourse(ctx.env, sampleCourse, u.id) }, 201);

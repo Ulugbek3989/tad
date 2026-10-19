@@ -11,7 +11,7 @@ export async function coursesView(view, ctx) {
   setHTML(view, html`
     <div class="page-head"><div><h1>${t ? 'Kurslar' : 'Mening fanlarim'}</h1><p>${t ? "Fanlar, ularning dasturi va o'quv materiallari" : "Siz o'qiyotgan fanlar"}</p></div>
       <div class="row">${t ? html`
-        <button class="btn" id="sample-btn">🎁 Namuna kurs</button>
+        <button class="btn" id="sample-btn">📦 Tayyor kurslar</button>
         <button class="btn" id="import-btn">📥 Import (JSON)</button>
         <button class="btn primary" id="new-btn">➕ Yangi kurs</button>` : html`<button class="btn primary" id="join-btn">➕ Guruhga qo'shilish</button>`}</div></div>
     ${courses.length ? html`<div class="grid grid-auto">${courses.map((c) => html`
@@ -24,18 +24,36 @@ export async function coursesView(view, ctx) {
           ${!t ? html`${progressBar(c.progress)}<span class="small muted">${c.progress}% bajarildi</span>` : ''}
         </div>
       </a>`)}</div>`
-    : html`<div class="card empty"><div class="big">📚</div><h3>Kurslar yo'q</h3><p>${t ? 'Yangi kurs yarating yoki namuna kursni yuklab, platforma imkoniyatlari bilan tanishing.' : "O'qituvchingizdan guruh kodini oling."}</p></div>`}`);
+    : html`<div class="card empty"><div class="big">📚</div><h3>Kurslar yo'q</h3><p>${t ? "Yangi kurs yarating yoki «Tayyor kurslar» bo'limidan kursni yuklang." : "O'qituvchingizdan guruh kodini oling."}</p></div>`}`);
 
   if (!t) { view.querySelector('#join-btn').addEventListener('click', joinGroupDialog); return; }
   view.querySelector('#new-btn').addEventListener('click', () => courseDialog());
-  view.querySelector('#sample-btn').addEventListener('click', async () => {
-    try {
-      const { id } = await api.post('/api/courses/sample');
-      toast('Namuna kurs yaratildi', 'success');
-      navigate(`/courses/${id}`);
-    } catch (e) { toast(e.message, 'error'); }
-  });
+  view.querySelector('#sample-btn').addEventListener('click', catalogDialog);
   view.querySelector('#import-btn').addEventListener('click', importDialog);
+}
+
+async function catalogDialog() {
+  const { courses } = await api.get('/api/courses/catalog');
+  modal({
+    title: '📦 Tayyor kurslar',
+    size: 'lg',
+    body: html`<p class="muted">Platformaga o'rnatilgan, to'liq tayyorlangan kurslar. Yuklangan kursni keyin istalgancha tahrirlashingiz mumkin.</p>
+      <div class="stack">${courses.map((c) => html`<div class="card" style="box-shadow:none;border-left:5px solid ${c.color}">
+        <div class="row between"><div><strong style="font-size:1.05rem">${c.title}</strong> ${c.code ? html`<span class="badge">${c.code}</span>` : ''}</div>
+          <button class="btn primary sm" data-key="${c.key}">Yuklash</button></div>
+        <p class="small muted" style="margin:6px 0">${c.description}</p>
+        <div class="small">🗂 ${c.modules} bo'lim · 📘 ${c.lessons} dars · 🧩 ${c.activities} mashg'ulot</div></div>`)}</div>`,
+    onMount: (el, close) => on(el, 'click', '[data-key]', async (e, b) => {
+      b.disabled = true;
+      b.textContent = 'Yuklanmoqda…';
+      try {
+        const { id } = await api.post(`/api/courses/catalog/${b.dataset.key}`);
+        close();
+        toast('Kurs yuklandi', 'success');
+        navigate(`/courses/${id}`);
+      } catch (err) { toast(err.message, 'error'); b.disabled = false; b.textContent = 'Yuklash'; }
+    }),
+  });
 }
 
 function importDialog() {

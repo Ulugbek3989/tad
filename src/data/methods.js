@@ -200,6 +200,27 @@ export const METHODS = [
     tips: "Interaktiv doskadagi \"yoqdi\" tugmasi o'zaro baholash uchun.",
     board: ['Ishlar va izohlar'],
   },
+{
+    key: 'simulation', name: "Simulyatsiya o'yinlari (biznes o'yinlar)", category: 'interactive', duration: '30–60 daq', group: 'Kichik guruhlar', bloom: ["Qo'llash", 'Tahlil', 'Baholash'],
+    goal: "Real iqtisodiy jarayonni xavfsiz muhitda modellashtirish: qaror qabul qilish, natijasini ko'rish va xulosa chiqarish.",
+    steps: ["O'yin qoidalari va maqsadini tushuntiring (masalan: Jamg'arma o'yini, Mikrobiznes o'yini, Bank suhbati, Savdo o'yini).", "Guruhlarga boshlang'ich resurs (pul, mahsulot, vaqt) bering.", "Bir necha raund o'tkazing: har raundda guruhlar qaror qabul qiladi.", "O'qituvchi bozor holatini o'zgartiradi (narx, talab, kredit foizi).", "Natijalarni hisoblang va eng samarali strategiyani aniqlang.", "Refleksiya: qaysi qaror nimaga olib keldi?"],
+    tips: "Natijalarni elektron jadvalda yuriting — talabalar pul oqimi va foyda-zararni real vaqtda ko'radi.",
+    board: ['Qarorlarimiz', 'Natija', 'Xulosa'],
+  },
+  {
+    key: 'peer_review', name: "O'zaro baholash (Peer assessment)", category: 'assessment', duration: '15–25 daq', group: 'Juftlik / kichik guruh', bloom: ['Baholash'],
+    goal: "Talabalar bir-birining ishini aniq mezonlar asosida baholab, tanqidiy fikrlash va konstruktiv fikr bildirishni o'rganadi.",
+    steps: ["Baholash mezonlarini (rubrikani) oldindan e'lon qiling.", "Ishlarni juftlar yoki guruhlar o'rtasida almashtiring.", "Har bir baholovchi mezon bo'yicha ball va 2 ta kuchli tomon, 1 ta tavsiya yozadi.", "Muallif fikrlarni o'qib, ishini takomillashtiradi.", "O'qituvchi yakuniy bahoni belgilaydi."],
+    tips: "\"2 yulduz va 1 tilak\" formati: ikki kuchli tomon va bitta takomillashtirish taklifi.",
+    board: ['⭐ Kuchli tomonlar', '💡 Tavsiyalar', '❓ Savollar'],
+  },
+  {
+    key: 'workshop', name: 'Guruh ustaxonasi (Workshop)', category: 'group', duration: '40–80 daq', group: '3–5 kishilik guruhlar', bloom: ["Qo'llash", 'Yaratish'],
+    goal: "Guruh bilan aniq mahsulot yaratish: biznes model sxemasi, xavf matritsasi, moliyaviy jadval, ish o'rni tavsifi.",
+    steps: ["Ustaxona mahsulotini va shablonni bering.", "Rollarni taqsimlang (moderator, yozuvchi, vaqt nazoratchisi, taqdimotchi).", "Guruh shablonni bosqichma-bosqich to'ldiradi.", "Oraliq tekshiruv: o'qituvchi savollar beradi.", "Guruhlar natijani taqdim etadi (galereya sayri yoki 3 daqiqalik chiqish)."],
+    tips: "Har bir ustaxona natijasi talabaning shaxsiy biznes loyihasiga qo'shilishi kerak (vertikal loyiha).",
+    board: null,
+  },
 ];
 
 export const methodByKey = (k) => METHODS.find((m) => m.key === k);

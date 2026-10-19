@@ -49,6 +49,17 @@ Platforma dunyodagi yetakchi ta'lim platformalarining eng yaxshi yondashuvlarini
 
 ---
 
+## Tayyor kurslar
+
+Platformaga quyidagi kurslar o'rnatilgan. Ularni **Kurslar → 📦 Tayyor kurslar** orqali bir bosishda yuklash mumkin:
+
+| Kurs | Fayl | Tarkibi |
+|---|---|---|
+| **Tadbirkorlik asoslari** (TDAB 404, VII semestr, 4 kredit) | [`courses/tadbirkorlik-asoslari.json`](courses/tadbirkorlik-asoslari.json) | Rasmiy fan dasturi asosida: 15 mavzu (M1–M15), 15 amaliy mashg'ulot (A1–A15), 30 mustaqil ish (MT1–MT30), oraliq va yakuniy nazorat testlari; jami 18 dars, 125 mashg'ulot |
+| Informatika (namuna) | [`sample/sample-course.json`](sample/sample-course.json) | Barcha mashg'ulot turlarining namunasi |
+
+Yangi kurs qo'shish uchun JSON faylni `courses/` papkasiga joylang va uni `src/index.js` dagi `CATALOG` ro'yxatiga kiriting.
+
 ## Cloudflare'ga joylash
 
 Talablar: Node.js 18+ va Cloudflare akkaunti (bepul tarif ham yetadi).
