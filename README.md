@@ -62,31 +62,26 @@ Yangi kurs qo'shish uchun JSON faylni `courses/` papkasiga joylang va uni `src/i
 
 ## Cloudflare'ga joylash
 
-Talablar: Node.js 18+ va Cloudflare akkaunti (bepul tarif ham yetadi).
+### 1-usul: Cloudflare paneli orqali (GitHub'dan avtomatik)
+1. Cloudflare → **Workers & Pages → Create → Import a repository** → `Ulugbek3989/tad`.
+2. "Missing git connection" chiqsa: **Connect GitHub** tugmasini bosing va Cloudflare GitHub ilovasiga shu repozitoriyga ruxsat bering.
+3. Sozlamalar: *Project name* — `tad-platform` (yoki istalgan), *Build command* — bo'sh, *Deploy command* — `npx wrangler deploy`. Agar *Production branch* so'ralsa, kod joylashgan tarmoqni tanlang.
+4. **Deploy** — D1 ma'lumotlar bazasi (`tad-db`) avtomatik yaratiladi, jadvallar esa birinchi so'rovda avtomatik tuziladi. Har bir yangi push avtomatik qayta joylanadi.
 
+### 2-usul: buyruq satridan
 ```bash
 npm install
 npx wrangler login
-
-# 1) D1 ma'lumotlar bazasini yarating
-npx wrangler d1 create tad-db
-#    Buyruq qaytargan database_id qiymatini wrangler.jsonc faylidagi
-#    "database_id" maydoniga qo'ying.
-
-# 2) Jadvallarni yarating
-npm run db:migrate:remote
-
-# 3) (ixtiyoriy) O'qituvchilar ro'yxatdan o'tishi uchun taklif kodi
-npx wrangler secret put TEACHER_CODE
-
-# 4) (ixtiyoriy) O'zbek tilida yuqori sifatli AI uchun Claude API kaliti
-npx wrangler secret put ANTHROPIC_API_KEY
-
-# 5) Joylash
-npm run deploy
+npm run deploy          # D1 bazasi avtomatik yaratiladi
 ```
 
-Joylashdan keyin sayt manzilini oching va birinchi bo'lib ro'yxatdan o'ting: siz administrator bo'lasiz. So'ng **Kurslar → 🎁 Namuna kurs** tugmasini bosib, barcha imkoniyatlar bilan tanishing.
+Ixtiyoriy maxfiy kalitlar:
+```bash
+npx wrangler secret put TEACHER_CODE        # o'qituvchilar ro'yxatdan o'tish kodi
+npx wrangler secret put ANTHROPIC_API_KEY   # o'zbek tilida sifatliroq AI (Claude)
+```
+
+Joylashdan keyin sayt manzilini oching va birinchi bo'lib ro'yxatdan o'ting: siz administrator bo'lasiz. So'ng **Kurslar → 📦 Tayyor kurslar** dan "Tadbirkorlik asoslari"ni yuklang.
 
 ### Sun'iy intellekt
 - Standart holatda **Cloudflare Workers AI** ishlatiladi (`AI_MODEL`, standart qiymati `@cf/meta/llama-3.3-70b-instruct-fp8-fast`). Qo'shimcha sozlash kerak emas.

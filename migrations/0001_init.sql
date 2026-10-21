@@ -1,6 +1,6 @@
 -- TAD Ta'lim platformasi: boshlang'ich sxema
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
@@ -14,14 +14,14 @@ CREATE TABLE users (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TABLE sessions (
+CREATE TABLE IF NOT EXISTS sessions (
   token TEXT PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   expires_at TEXT NOT NULL
 );
-CREATE INDEX idx_sessions_user ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
 
-CREATE TABLE courses (
+CREATE TABLE IF NOT EXISTS courses (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
   code TEXT,
@@ -35,16 +35,16 @@ CREATE TABLE courses (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TABLE modules (
+CREATE TABLE IF NOT EXISTS modules (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT,
   position INTEGER NOT NULL DEFAULT 0
 );
-CREATE INDEX idx_modules_course ON modules(course_id);
+CREATE INDEX IF NOT EXISTS idx_modules_course ON modules(course_id);
 
-CREATE TABLE lessons (
+CREATE TABLE IF NOT EXISTS lessons (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
   course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
@@ -56,10 +56,10 @@ CREATE TABLE lessons (
   kind TEXT DEFAULT 'lecture', -- lecture | practical | lab | seminar | independent
   position INTEGER NOT NULL DEFAULT 0
 );
-CREATE INDEX idx_lessons_module ON lessons(module_id);
-CREATE INDEX idx_lessons_course ON lessons(course_id);
+CREATE INDEX IF NOT EXISTS idx_lessons_module ON lessons(module_id);
+CREATE INDEX IF NOT EXISTS idx_lessons_course ON lessons(course_id);
 
-CREATE TABLE activities (
+CREATE TABLE IF NOT EXISTS activities (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   lesson_id INTEGER NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
   course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
@@ -72,10 +72,10 @@ CREATE TABLE activities (
   attempts INTEGER NOT NULL DEFAULT 0,  -- 0 = cheklanmagan
   position INTEGER NOT NULL DEFAULT 0
 );
-CREATE INDEX idx_activities_lesson ON activities(lesson_id);
-CREATE INDEX idx_activities_course ON activities(course_id);
+CREATE INDEX IF NOT EXISTS idx_activities_lesson ON activities(lesson_id);
+CREATE INDEX IF NOT EXISTS idx_activities_course ON activities(course_id);
 
-CREATE TABLE groups (
+CREATE TABLE IF NOT EXISTS groups (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -84,15 +84,15 @@ CREATE TABLE groups (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TABLE group_members (
+CREATE TABLE IF NOT EXISTS group_members (
   group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   joined_at TEXT NOT NULL DEFAULT (datetime('now')),
   PRIMARY KEY (group_id, user_id)
 );
-CREATE INDEX idx_group_members_user ON group_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_group_members_user ON group_members(user_id);
 
-CREATE TABLE lesson_progress (
+CREATE TABLE IF NOT EXISTS lesson_progress (
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   lesson_id INTEGER NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
   viewed_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -100,7 +100,7 @@ CREATE TABLE lesson_progress (
   PRIMARY KEY (user_id, lesson_id)
 );
 
-CREATE TABLE assignments (
+CREATE TABLE IF NOT EXISTS assignments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -115,9 +115,9 @@ CREATE TABLE assignments (
   due_at TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-CREATE INDEX idx_assignments_course ON assignments(course_id);
+CREATE INDEX IF NOT EXISTS idx_assignments_course ON assignments(course_id);
 
-CREATE TABLE submissions (
+CREATE TABLE IF NOT EXISTS submissions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   activity_id INTEGER REFERENCES activities(id) ON DELETE CASCADE,
   assignment_id INTEGER REFERENCES assignments(id) ON DELETE CASCADE,
@@ -132,12 +132,12 @@ CREATE TABLE submissions (
   graded_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-CREATE INDEX idx_submissions_user ON submissions(user_id);
-CREATE INDEX idx_submissions_activity ON submissions(activity_id);
-CREATE INDEX idx_submissions_assignment ON submissions(assignment_id);
-CREATE INDEX idx_submissions_status ON submissions(status);
+CREATE INDEX IF NOT EXISTS idx_submissions_user ON submissions(user_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_activity ON submissions(activity_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_assignment ON submissions(assignment_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_status ON submissions(status);
 
-CREATE TABLE xp_events (
+CREATE TABLE IF NOT EXISTS xp_events (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   amount INTEGER NOT NULL,
@@ -146,9 +146,9 @@ CREATE TABLE xp_events (
   given_by INTEGER,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-CREATE INDEX idx_xp_user ON xp_events(user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_xp_user ON xp_events(user_id, created_at);
 
-CREATE TABLE user_badges (
+CREATE TABLE IF NOT EXISTS user_badges (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   badge_key TEXT NOT NULL,
@@ -156,9 +156,9 @@ CREATE TABLE user_badges (
   awarded_by INTEGER,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-CREATE INDEX idx_user_badges_user ON user_badges(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_badges_user ON user_badges(user_id);
 
-CREATE TABLE srs_cards (
+CREATE TABLE IF NOT EXISTS srs_cards (
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   activity_id INTEGER NOT NULL REFERENCES activities(id) ON DELETE CASCADE,
   card_index INTEGER NOT NULL,
@@ -170,7 +170,7 @@ CREATE TABLE srs_cards (
   PRIMARY KEY (user_id, activity_id, card_index)
 );
 
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   activity_id INTEGER NOT NULL REFERENCES activities(id) ON DELETE CASCADE,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -179,15 +179,15 @@ CREATE TABLE posts (
   likes INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-CREATE INDEX idx_posts_activity ON posts(activity_id);
+CREATE INDEX IF NOT EXISTS idx_posts_activity ON posts(activity_id);
 
-CREATE TABLE post_likes (
+CREATE TABLE IF NOT EXISTS post_likes (
   post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   PRIMARY KEY (post_id, user_id)
 );
 
-CREATE TABLE announcements (
+CREATE TABLE IF NOT EXISTS announcements (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   group_id INTEGER REFERENCES groups(id) ON DELETE CASCADE,
@@ -197,7 +197,7 @@ CREATE TABLE announcements (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
@@ -206,9 +206,9 @@ CREATE TABLE notifications (
   is_read INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-CREATE INDEX idx_notifications_user ON notifications(user_id, is_read);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, is_read);
 
-CREATE TABLE recommendations (
+CREATE TABLE IF NOT EXISTS recommendations (
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   content TEXT NOT NULL,       -- JSON

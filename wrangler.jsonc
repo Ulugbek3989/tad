@@ -14,16 +14,19 @@
     "run_worker_first": ["/api/*"]
   },
 
-  // D1 ma'lumotlar bazasi: `npx wrangler d1 create tad-db` buyrug'i bergan
-  // database_id qiymatini shu yerga qo'ying.
+  // D1 ma'lumotlar bazasi. database_id ko'rsatilmagan: birinchi `wrangler deploy`da
+  // Cloudflare bazani avtomatik yaratadi. Jadvallar Worker'ning birinchi so'rovida
+  // avtomatik yaratiladi (src/lib/schema.js).
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "tad-db",
-      "database_id": "00000000-0000-0000-0000-000000000000",
       "migrations_dir": "migrations"
     }
   ],
+
+  // migrations/*.sql fayllarini Worker ichiga matn sifatida qo'shish
+  "rules": [{ "type": "Text", "globs": ["**/*.sql"], "fallthrough": true }],
 
   // Cloudflare Workers AI — baholash, tavsiyalar va AI-yordamchi uchun
   "ai": { "binding": "AI" },

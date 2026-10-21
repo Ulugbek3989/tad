@@ -1,6 +1,7 @@
 import { Router } from './lib/router.js';
 import { json, HttpError } from './lib/http.js';
 import { loadUser, requireTeacher } from './lib/auth.js';
+import { ensureSchema } from './lib/schema.js';
 import authRoutes from './routes/auth.js';
 import courseRoutes, { importCourse } from './routes/courses.js';
 import learningRoutes from './routes/learning.js';
@@ -54,6 +55,7 @@ async function handleApi(req, env, execCtx) {
     const ct = req.headers.get('content-type') || '';
     if (req.method !== 'DELETE' && !ct.includes('application/json')) return json({ error: 'Content-Type: application/json kerak' }, 415);
   }
+  await ensureSchema(env);
   const m = router.match(req.method, url.pathname);
   if (!m.handler) return json({ error: m.pathMatched ? 'Usul qo\'llab-quvvatlanmaydi' : 'API topilmadi' }, m.pathMatched ? 405 : 404);
   const ctx = { req, env, url, params: m.params, user: await loadUser(env, req), waitUntil: (p) => execCtx.waitUntil(p) };
