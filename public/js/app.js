@@ -15,6 +15,7 @@ import { aiStudioView } from './views/aistudio.js';
 import { mountTutor, setTutorContext } from './views/tutor.js';
 import { projectView } from './views/project.js';
 import { calcView } from './views/calc.js';
+import { resourcesPage } from './views/resources.js';
 
 export const state = { user: null, route: null };
 
@@ -41,6 +42,7 @@ const routes = [
   ['/ai', aiStudioView],
   ['/courses/:id/project', projectView],
   ['/calc', calcView],
+  ['/resources', resourcesPage],
   ['/project', myProjectRedirect],
   ['/profile', profileView],
   ['/users/:id', profileView],
@@ -92,6 +94,7 @@ function navLinks() {
     ['Asosiy', [
       ['/', '🏠', 'Bosh sahifa'],
       ['/courses', '📚', t ? 'Kurslar' : 'Mening fanlarim'],
+      ['/resources', '🗂️', 'Resurslar'],
       ...(t ? [] : [['/project', '💼', 'Biznes loyiham'], ['/review', '🃏', 'Takrorlash'], ['/assignments', '📝', "Qo'shimcha topshiriqlar"], ['/leaderboard', '🏆', 'Reyting']]),
     ]],
     ...(t ? [['O\'qituvchi', [

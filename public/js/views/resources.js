@@ -3,10 +3,10 @@ import { api } from '../api.js';
 import { html, setHTML, md, modal, toast, on, download, progressBar, timeAgo } from '../ui.js';
 import { reload as rerender } from '../app.js';
 
-export async function renderResources(body, course, t) {
+export async function renderResources(body, course, t, initialTab = 'glossary') {
   const { resources: r } = await api.get(`/api/courses/${course.id}/resources`);
   const empty = !r || !Object.keys(r).length;
-  let tab = 'glossary';
+  let tab = initialTab;
   let q = '';
   const tabs = [['glossary', `📖 Lug'at (${r.glossary?.length || 0})`], ['templates', `📋 Shablonlar (${r.templates?.length || 0})`], ['links', '🔗 Manbalar'], ['cases', `💼 Keyslar (${r.cases?.length || 0})`], ['tools', '🧮 Kalkulyatorlar']];
   const draw = () => {
@@ -34,7 +34,7 @@ export async function renderResources(body, course, t) {
     if (tab === 'links') {
       return html`${(r.links || []).map((g) => html`<div class="card" style="box-shadow:none"><h3>${g.group}</h3>
         ${g.items.map((it) => html`<div style="padding:8px 0;border-bottom:1px solid var(--border)"><a href="${it.url}" target="_blank" rel="noopener"><strong>${it.title}</strong></a> <span class="small muted">${it.url}</span><div class="small">${it.desc || ''}</div></div>`)}</div>`)}
-        <div class="card" style="box-shadow:none"><h3>📚 Adabiyotlar</h3><p class="small">Asosiy va qo'shimcha adabiyotlar ro'yxati fan dasturida: <a href="#/courses/${course.id}?tab=syllabus">Fan dasturi → Adabiyotlar</a>.</p></div>`;
+        ${course.enrolled === false ? '' : html`<div class="card" style="box-shadow:none"><h3>📚 Adabiyotlar</h3><p class="small">Asosiy va qo'shimcha adabiyotlar ro'yxati fan dasturida: <a href="#/courses/${course.id}?tab=syllabus">Fan dasturi → Adabiyotlar</a>.</p></div>`}`;
     }
     if (tab === 'cases') {
       return html`<p class="small muted">Qo'shimcha o'quv keyslari (shartli vaziyatlar) — seminar, guruh muhokamasi va mustaqil tahlil uchun.</p>
@@ -106,4 +106,22 @@ export async function renderProjectTab(body, course, t) {
         <td class="small muted nowrap">${x.updated_at ? timeAgo(x.updated_at) : '—'}</td>
         <td class="right nowrap">${x.commented ? '💬 ' : ''}<a class="btn sm" href="#/courses/${course.id}/project?user=${x.id}">Ko'rish</a></td></tr>`)}</tbody></table></div>`
       : html`<p class="muted">Kursda hali talabalar yo'q.</p>`}</div>`);
+}
+
+/** Alohida "Resurslar" sahifasi (menyudan): o'quvchi va o'qituvchi uchun. */
+export async function resourcesPage(view, ctx) {
+  const { courses } = await api.get('/api/resources');
+  if (!ctx.isCurrent()) return;
+  if (!courses.length) {
+    setHTML(view, html`<div class="page-head"><div><h1>📚 Resurslar</h1></div></div>
+      <div class="card empty"><div class="big">📚</div><p>Hozircha resurslar mavjud emas.<br>O'qituvchingizdan guruh kodini olib, fanga qo'shiling.</p></div>`);
+    return;
+  }
+  const c = courses.find((x) => String(x.id) === ctx.query.c) || courses[0];
+  setHTML(view, html`<div class="page-head"><div><h1>📚 Resurslar</h1><p>Atamalar lug'ati, shablonlar, rasmiy manbalar, qo'shimcha keyslar va biznes kalkulyatorlari</p></div>
+      ${courses.length > 1 ? html`<select id="res-course" style="width:auto">${courses.map((x) => html`<option value="${x.id}" ${x.id === c.id ? 'selected' : ''}>${x.title}${x.code ? ` (${x.code})` : ''}</option>`)}</select>` : html`<span class="badge primary">${c.title}</span>`}</div>
+    ${!c.enrolled ? html`<div class="alert info small">Siz bu fan guruhiga hali qo'shilmagansiz — resurslar ochiq, lekin darslar, testlar va biznes loyiha uchun guruh kodi kerak.</div>` : ''}
+    <div id="res-body"></div>`);
+  view.querySelector('#res-course')?.addEventListener('change', (e) => { location.hash = `#/resources?c=${e.target.value}`; });
+  await renderResources(view.querySelector('#res-body'), { ...c, can_edit: false }, false, ctx.query.t || 'glossary');
 }

@@ -1,10 +1,11 @@
 // Kurs resurslari va talabaning biznes loyihasi (vertikal loyiha portfeli)
 import { all, first, run, notify } from '../lib/db.js';
-import { json, readJson, str, int, badRequest, forbidden, parseJSON } from '../lib/http.js';
+import { json, readJson, str, int, badRequest, forbidden, notFound, parseJSON } from '../lib/http.js';
 import { requireUser, requireTeacher, isTeacher } from '../lib/auth.js';
 import { assertCourseView, assertCourseEdit, assertCourseTeach, assertTeachesStudent } from '../lib/access.js';
 import { aiJSON, aiProvider, AIUnavailable, truncate } from '../lib/ai.js';
 import { awardXP, giveBadge } from '../lib/gamification.js';
+import { visibleCourses } from './courses.js';
 
 /** Loyiha bo'limlari va "to'ldirilgan" deb hisoblash uchun minimal maydonlar soni. */
 export const PROJECT_SECTIONS = {
@@ -39,10 +40,30 @@ async function loadProject(env, userId, courseId) {
 
 export default function (r) {
   // ---- Kurs resurslari (lug'at, shablonlar, havolalar, adabiyotlar, keyslar) ----
+  // Resurslar ochiq material: kursga yozilgan har bir kishi hamda e'lon qilingan kurslar uchun barcha foydalanuvchilar ko'radi
+  r.get('/api/resources', async (ctx) => {
+    const u = requireUser(ctx);
+    const mine = new Set((await visibleCourses(ctx.env, u)).map((c) => c.id));
+    const rows = await all(ctx.env,
+      `SELECT c.id, c.title, c.code, c.color, c.published, cr.data FROM course_resources cr JOIN courses c ON c.id = cr.course_id ORDER BY c.id`);
+    const courses = rows
+      .filter((c) => mine.has(c.id) || c.published)
+      .map((c) => {
+        const d = parseJSON(c.data, {});
+        return { id: c.id, title: c.title, code: c.code, color: c.color, enrolled: mine.has(c.id),
+          counts: { glossary: d.glossary?.length || 0, templates: d.templates?.length || 0, cases: d.cases?.length || 0, links: (d.links || []).reduce((n, g) => n + (g.items?.length || 0), 0) } };
+      })
+      .filter((c) => Object.values(c.counts).some(Boolean))
+      .sort((a, b) => Number(b.enrolled) - Number(a.enrolled));
+    return json({ courses });
+  });
+
   r.get('/api/courses/:id/resources', async (ctx) => {
     const u = requireUser(ctx);
     const id = Number(ctx.params.id);
-    await assertCourseView(ctx.env, u, id);
+    const course = await first(ctx.env, 'SELECT id, published FROM courses WHERE id = ?', id);
+    if (!course) notFound('Kurs topilmadi');
+    if (!course.published) await assertCourseView(ctx.env, u, id);
     const row = await first(ctx.env, 'SELECT data FROM course_resources WHERE course_id = ?', id);
     return json({ resources: parseJSON(row?.data, {}) });
   });

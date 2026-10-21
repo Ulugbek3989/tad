@@ -52,6 +52,11 @@ function studentDashboard(view, d) {
               <div style="margin-top:6px">${progressBar(c.progress)}</div></a>`)
             : html`<div class="empty"><div class="big">📭</div><p>Hali birorta fanga yozilmagansiz.<br>O'qituvchingizdan guruh kodini so'rang.</p></div>`}
         </div>
+        <div class="grid grid-3">
+          <a class="card method-card" href="#/resources"><div style="font-size:1.6rem">🗂️</div><strong>Resurslar</strong><span class="small muted">Lug'at, shablonlar, manbalar, keyslar</span></a>
+          <a class="card method-card" href="#/project"><div style="font-size:1.6rem">💼</div><strong>Biznes loyiham</strong><span class="small muted">G'oyadan biznes-rejagacha</span></a>
+          <a class="card method-card" href="#/calc"><div style="font-size:1.6rem">🧮</div><strong>Kalkulyatorlar</strong><span class="small muted">Zararsizlik, kredit, soliq, ROI</span></a>
+        </div>
         <div class="card" id="reco-card"><div class="card-head"><h3>🤖 Shaxsiy tavsiyalar</h3></div><div id="reco"><span class="spinner"></span></div></div>
       </div>
       <div class="stack">
