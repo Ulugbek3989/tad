@@ -2,6 +2,8 @@ import { all, first, run, insert } from '../lib/db.js';
 import { json, readJson, str, badRequest, fail, notFound } from '../lib/http.js';
 import { hashPassword, verifyPassword, createSession, sessionCookie, requireUser, requireAdmin } from '../lib/auth.js';
 import { levelInfo, touchStreak, BADGES } from '../lib/gamification.js';
+import { CATALOG } from '../data/catalog.js';
+import { importCourse } from './courses.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -29,6 +31,10 @@ export default function (r) {
     if (role === 'student' && b.teacher_code && env.TEACHER_CODE && b.teacher_code === env.TEACHER_CODE) role = 'teacher';
     const id = await createUser(env, { name, email, password: b.password, role });
     const token = await createSession(env, id);
+    // Platforma fanga moslangan: birinchi administrator uchun asosiy kurs avtomatik yuklanadi
+    if (role === 'admin' && env.DEFAULT_COURSE && CATALOG[env.DEFAULT_COURSE]) {
+      await importCourse(env, CATALOG[env.DEFAULT_COURSE], id);
+    }
     if (b.join_code) {
       const g = await first(env, 'SELECT id FROM groups WHERE join_code = ?', String(b.join_code).trim().toUpperCase());
       if (g) await run(env, 'INSERT OR IGNORE INTO group_members (group_id, user_id) VALUES (?, ?)', g.id, id);

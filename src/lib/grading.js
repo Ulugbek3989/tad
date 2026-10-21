@@ -1,3 +1,5 @@
+import { simulate, publicSimulation } from './simulation.js';
+
 // Mashg'ulot turlari, o'quvchiga ko'rsatishdan oldin javoblarni yashirish va avtomatik tekshirish
 
 export const ACTIVITY_TYPES = {
@@ -14,6 +16,7 @@ export const ACTIVITY_TYPES = {
   case: { name: 'Keys (vaziyatli masala)', mode: 'ai' },
   essay: { name: 'Esse / refleksiya', mode: 'ai' },
   board: { name: 'Interaktiv doska (metod)', mode: 'participate' },
+  simulation: { name: "Simulyatsiya o'yini", mode: 'auto' },
 };
 
 export const isAiType = (t) => ACTIVITY_TYPES[t]?.mode === 'ai';
@@ -83,6 +86,8 @@ export function sanitizeContent(type, c = {}) {
       const cats = c.categories || [];
       return { categories: cats.map((x) => x.name), items: shuffle(cats.flatMap((x) => x.items || [])) };
     }
+    case 'simulation':
+      return publicSimulation(c);
     case 'practical':
     case 'case':
     case 'lab':
@@ -128,6 +133,12 @@ export function autoGrade(type, c = {}, answer = {}, maxPoints = 10) {
       const correct = {};
       for (const cat of c.categories || []) for (const it of cat.items || []) correct[it] = cat.name;
       return fraction(results, maxPoints, { results, correct });
+    }
+    case 'simulation': {
+      const res = simulate(c, answer.decisions || []);
+      if (!res.finished) return { score: 0, max: maxPoints, details: { ...res, ok: 0, total: 1 } };
+      const frac = Math.max(0, Math.min(1, res.profit / (c.target_profit || 1)));
+      return { score: round(frac * maxPoints), max: maxPoints, details: { ...res, ok: frac >= 1 ? 1 : 0, total: 1, target_profit: c.target_profit } };
     }
     default:
       return { score: maxPoints, max: maxPoints, details: { completed: true } };

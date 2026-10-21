@@ -9,14 +9,8 @@ import groupRoutes from './routes/groups.js';
 import teachingRoutes from './routes/teaching.js';
 import aiRoutes from './routes/ai.js';
 import dashboardRoutes from './routes/dashboard.js';
-import sampleCourse from '../sample/sample-course.json';
-import tadbirkorlik from '../courses/tadbirkorlik-asoslari.json';
-
-// Platformaga o'rnatilgan tayyor kurslar katalogi
-const CATALOG = {
-  'tadbirkorlik-asoslari': tadbirkorlik,
-  namuna: sampleCourse,
-};
+import projectRoutes from './routes/projects.js';
+import { CATALOG, sampleCourse } from './data/catalog.js';
 
 const router = new Router();
 // Statik marshrutlar dinamik /api/courses/:id dan oldin turishi kerak
@@ -41,8 +35,9 @@ router.post('/api/courses/sample', async (ctx) => {
   return json({ id: await importCourse(ctx.env, sampleCourse, u.id) }, 201);
 });
 router.get('/api/courses/template', async () => json(sampleCourse));
-[authRoutes, courseRoutes, learningRoutes, groupRoutes, teachingRoutes, aiRoutes, dashboardRoutes].forEach((register) => register(router));
+[authRoutes, courseRoutes, learningRoutes, groupRoutes, teachingRoutes, aiRoutes, dashboardRoutes, projectRoutes].forEach((register) => register(router));
 router.get('/api/health', async (ctx) => json({ ok: true, app: ctx.env.APP_NAME || 'TAD' }));
+router.get('/api/public/info', async (ctx) => json({ app_name: ctx.env.APP_NAME || "TAD Ta'lim platformasi", tagline: ctx.env.APP_TAGLINE || null }));
 
 const MUTATING = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
 

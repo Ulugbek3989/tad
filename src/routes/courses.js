@@ -208,8 +208,10 @@ export default function (r) {
     const modules = await all(ctx.env, 'SELECT * FROM modules WHERE course_id = ? ORDER BY position, id', id);
     const lessons = await all(ctx.env, 'SELECT * FROM lessons WHERE course_id = ? ORDER BY position, id', id);
     const acts = await all(ctx.env, 'SELECT * FROM activities WHERE course_id = ? ORDER BY position, id', id);
+    const res = await first(ctx.env, 'SELECT data FROM course_resources WHERE course_id = ?', id);
     const data = {
       format: 'tad-course-v1',
+      resources: parseJSON(res?.data, undefined),
       course: { title: c.title, code: c.code, description: c.description, syllabus: c.syllabus, objectives: parseJSON(c.objectives, []), literature: c.literature, color: c.color },
       modules: modules.map((m) => ({
         title: m.title,
@@ -431,6 +433,9 @@ export async function importCourse(env, data, ownerId) {
       });
     });
   });
+  if (data.resources && typeof data.resources === 'object') {
+    stmts.push(env.DB.prepare('INSERT INTO course_resources (course_id, data) VALUES (?, ?)').bind(courseId, JSON.stringify(data.resources)));
+  }
   if (stmts.length > 5000) badRequest('Kurs juda katta — qismlarga bo\'lib yuklang');
   await env.DB.batch(stmts);
   return courseId;

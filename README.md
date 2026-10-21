@@ -49,6 +49,15 @@ Platforma dunyodagi yetakchi ta'lim platformalarining eng yaxshi yondashuvlarini
 
 ---
 
+## "Tadbirkorlik asoslari" faniga moslashtirilgan imkoniyatlar
+
+- **💼 Biznes loyiham** — semestr davomidagi vertikal loyiha uchun ish maydoni. U 12 bo'limdan iborat: g'oya, 9 blokli biznes-model, mijoz portreti, bozor va raqobat, SWOT, huquqiy shakl va soliq, narx va zararsizlik nuqtasi, marketing, 3 oylik pul oqimi, xavflar matritsasi, moliyalashtirish va pitch. Ma'lumotlar avtomatik saqlanadi. Zararsizlik nuqtasi, kassa uzilishi va xavf darajalari avtomatik hisoblanadi. Barcha bo'limlardan **biznes-reja hujjati** yig'iladi (chop etish yoki PDF). AI ekspert bahosi beriladi, o'qituvchi esa izoh qoldiradi.
+- **🧮 Biznes kalkulyatorlari** — zararsizlik nuqtasi (grafik bilan), narx va tannarx, kredit (annuitet yoki differensial to'lov jadvali), soliq rejimlarini solishtirish, ROI va qoplanish muddati, bozor hajmi (TAM/SAM/SOM), reklama samaradorligi (CAC, ROMI).
+- **📚 Resurslar** — 108 ta atamali lug'at, 12 ta shablon (biznes-reja, canvas, persona, intervyu, shartnoma, bank suhbati, pitch-deck hamda pul oqimi, daromad-xarajat, kontent-reja, xavflar va CRM uchun Excel jadvallari), rasmiy manbalar va 6 ta qo'shimcha keys.
+- **🎲 "Mikrobiznes o'yini"** — 6 haftalik simulyatsiya: talaba narx, ishlab chiqarish hajmi va reklamani boshqaradi. Talab modeli serverda yashirin, natija avtomatik baholanadi.
+- **🎭 AI rol o'yinlari** — AI-yordamchida "bank xodimi" (kredit suhbati), "investor" (pitch) va "xaridor" (e'tirozlar) rejimlari bor. Ular talabaning biznes loyihasini hisobga oladi.
+- Birinchi administrator ro'yxatdan o'tganda kurs **avtomatik yuklanadi** (`DEFAULT_COURSE`).
+
 ## Tayyor kurslar
 
 Platformaga quyidagi kurslar o'rnatilgan. Ularni **Kurslar → 📦 Tayyor kurslar** orqali bir bosishda yuklash mumkin:

@@ -3,7 +3,7 @@ import { api } from '../api.js';
 import { html, raw, setHTML, md, toast, celebrate, ring, on, shuffle, sortable, videoEmbed, esc, timeAgo, confirmDialog } from '../ui.js';
 import { isTeacher, state, refreshUser } from '../app.js';
 
-const PLAYERS = { slides, reading, quiz, flashcards, matching, ordering, fillblank, classify, lab, practical, case: caseStudy, essay, board };
+const PLAYERS = { slides, reading, quiz, flashcards, matching, ordering, fillblank, classify, lab, practical, case: caseStudy, essay, board, simulation };
 
 /** Mashg'ulotni konteynerga chizadi. onResult(result) — topshirilgandan keyin. */
 export function renderActivity(el, act, { onResult } = {}) {
@@ -533,4 +533,99 @@ function board(el, { act }) {
   on(el, 'click', '[data-del]', async (e, b) => { await api.del(`/api/posts/${b.dataset.del}`); load(); });
   load();
   poll = setInterval(() => { if (document.visibilityState === 'visible') load(); }, 10000);
+}
+
+// ---------------- Simulyatsiya o'yini ("Mikrobiznes") ----------------
+const num = (n) => Math.round(n || 0).toLocaleString('ru-RU').replace(/,/g, ' ');
+const som = (n) => `${num(n)} so'm`;
+
+function simulation(el, { act, submit }) {
+  const c = act.content;
+  const label = c.round_label || 'Hafta';
+  let decisions = [];
+  let result = null;
+  let started = false;
+
+  const cashNow = () => (result?.rounds.length ? result.cash : c.start_cash);
+  const unitNow = () => (result?.rounds.length ? result.rounds[result.rounds.length - 1].unit_cost : c.unit_cost);
+
+  const historyTable = () => (result?.rounds.length ? html`<div class="table-wrap" style="margin-top:12px"><table class="table" style="font-variant-numeric:tabular-nums">
+    <thead><tr><th>${label}</th><th>Narx</th><th>Tayyorlandi</th><th>Reklama</th><th>Talab</th><th>Sotildi</th><th>Buzildi / yo'qotildi</th><th>Foyda</th><th>Kassa</th></tr><tr><th colspan="9" class="small" style="text-transform:none;letter-spacing:0">Summalar so'mda</th></tr></thead>
+    <tbody>${result.rounds.map((r) => html`<tr class="nowrap"><td>${r.round}</td><td>${num(r.price)}</td><td>${r.qty}</td><td>${num(r.ads)}</td><td>${r.demand}</td><td><strong>${r.sold}</strong></td>
+      <td class="small">${r.unsold ? html`<span style="color:var(--danger)">${r.unsold} buzildi</span>` : ''}${r.unsold && r.lost ? ' · ' : ''}${r.lost ? html`<span style="color:var(--warning)">${r.lost} mijoz qaytdi</span>` : ''}</td>
+      <td class="${r.profit >= 0 ? 'score-hi' : 'score-lo'}">${num(r.profit)}</td><td class="${r.cash < 0 ? 'score-lo' : ''}"><strong>${num(r.cash)}</strong></td></tr>`)}</tbody></table></div>` : '');
+
+  const cashChart = () => {
+    if (!result?.rounds.length) return '';
+    const pts = [c.start_cash, ...result.rounds.map((r) => r.cash)];
+    const max = Math.max(...pts, c.start_cash + c.target_profit);
+    return html`<div style="margin-top:14px"><div class="small muted">Kassa qoldig'i (maqsad: ${som(c.start_cash + c.target_profit)})</div>
+      <div class="bars" style="height:90px;margin:8px 0 24px">${pts.map((v, i) => html`<div class="bar" style="height:${Math.max(3, (Math.max(0, v) / max) * 100)}%;${v < 0 ? 'background:var(--danger)' : ''}" title="${som(v)}"><span>${i === 0 ? 'Start' : i}</span></div>`)}</div></div>`;
+  };
+
+  const draw = (final = null) => {
+    const r = decisions.length;
+    const done = r >= c.rounds;
+    const evs = (c.events || []).filter((e) => e.round === r + 1);
+    const profit = cashNow() - c.start_cash;
+    setHTML(el, html`${header(act)}
+      <div class="grid grid-4">
+        <div class="card stat" style="box-shadow:none"><div class="ico">💰</div><div><div class="val" style="font-size:1rem">${som(cashNow())}</div><div class="lbl">Kassa</div></div></div>
+        <div class="card stat" style="box-shadow:none"><div class="ico">📈</div><div><div class="val" style="font-size:1rem;color:${profit >= 0 ? 'var(--success)' : 'var(--danger)'}">${som(profit)}</div><div class="lbl">Jami foyda</div></div></div>
+        <div class="card stat" style="box-shadow:none"><div class="ico">🎯</div><div><div class="val" style="font-size:1rem">${som(c.target_profit)}</div><div class="lbl">Maqsad (foyda)</div></div></div>
+        <div class="card stat" style="box-shadow:none"><div class="ico">📅</div><div><div class="val" style="font-size:1.1rem">${Math.min(r + 1, c.rounds)} / ${c.rounds}</div><div class="lbl">${label}</div></div></div>
+      </div>
+      ${!started ? html`<div class="card" style="box-shadow:none;margin-top:14px"><h3>🎲 ${c.product}</h3><p>${c.intro}</p>
+          <ul class="small"><li>Har ${label.toLowerCase()}: <strong>narx</strong>, <strong>tayyorlanadigan miqdor</strong> va <strong>reklama byudjeti</strong>ni tanlaysiz.</li>
+          <li>Narx yuqori bo'lsa — talab kamayadi; reklama talabni oshiradi, lekin xarajat.</li>
+          <li>Sotilmagan mahsulot buziladi (zarar), yetishmasa — mijoz raqobatchiga ketadi.</li>
+          <li>Kassada pul yetmasa, xomashyo sotib ololmaysiz — pul oqimini kuzating!</li></ul>
+          <p class="small muted">${attemptsInfo(act)}${act.result ? ` · Eng yaxshi natija: ${act.result.best} / ${act.result.max}` : ''}</p>
+          <button class="btn primary lg" data-start>O'yinni boshlash</button></div>`
+      : done ? html`<div class="alert ${profit >= c.target_profit ? 'success' : 'warning'}" style="margin-top:14px"><strong>O'yin tugadi.</strong> Jami foyda: ${som(profit)} (maqsad ${som(c.target_profit)}).</div>
+          ${final ? scoreBlock(final) : html`<div class="row" style="justify-content:center"><button class="btn primary lg" data-finish>📤 Natijani topshirish</button></div>`}
+          <div class="card" style="box-shadow:none;margin-top:12px"><h4>🧠 Refleksiya savollari</h4><ul class="small"><li>Qaysi haftada eng ko'p foyda oldingiz va nima uchun?</li><li>Narx va talab o'rtasidagi bog'liqlikni qanday sezdingiz?</li><li>Reklama har doim foydalimi? Qachon foydasiz bo'ldi?</li><li>Buzilgan va yetishmagan mahsulot qancha yo'qotishga olib keldi? Buni zararsizlik nuqtasi bilan qanday bog'laysiz?</li></ul></div>
+          ${final ? html`<div class="center"><button class="btn" data-restart>🔁 Qayta o'ynash</button></div>` : ''}`
+      : html`<div class="card" style="box-shadow:none;margin-top:14px">
+          <h3>${label} ${r + 1}: qarorlaringiz</h3>
+          ${evs.map((e) => html`<div class="alert info">${e.text}</div>`)}
+          <form id="sim-form" class="grid grid-3">
+            <div class="field"><label>Narx (1 dona), so'm</label><input type="number" name="price" min="1" step="any" value="${decisions[r - 1]?.price ?? c.price_ref}" required></div>
+            <div class="field"><label>Tayyorlanadigan miqdor, dona</label><input type="number" name="qty" min="0" step="1" value="${decisions[r - 1]?.qty ?? 30}" required><div class="hint" id="qty-hint"></div></div>
+            <div class="field"><label>Reklama byudjeti, so'm</label><input type="number" name="ads" min="0" step="any" value="${decisions[r - 1]?.ads ?? 0}" required></div>
+            <div style="grid-column:1/-1" class="row between"><span class="small muted">Tannarx: ${som(unitNow())}/dona · doimiy xarajat: ${som(c.fixed_cost)}/${label.toLowerCase()}</span><button class="btn primary">▶ ${label}ni o'tkazish</button></div>
+          </form></div>`}
+      ${cashChart()}${historyTable()}`);
+    const f = el.querySelector('#sim-form');
+    if (f) {
+      const hint = () => {
+        const ads = Number(f.elements.ads.value) || 0;
+        const max = Math.max(0, Math.floor((cashNow() - c.fixed_cost - ads) / unitNow()));
+        el.querySelector('#qty-hint').textContent = `Kassadagi pulga ko'pi bilan ${max} dona tayyorlash mumkin`;
+      };
+      hint();
+      f.addEventListener('input', hint);
+      f.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const d = { price: Number(f.elements.price.value), qty: Number(f.elements.qty.value), ads: Number(f.elements.ads.value) };
+        const btn = f.querySelector('button');
+        btn.disabled = true;
+        try {
+          const res = await api.post(`/api/activities/${act.id}/simulate`, { decisions: [...decisions, d] });
+          decisions.push(d);
+          result = res.result;
+          const last = result.rounds[result.rounds.length - 1];
+          if (last.qty < d.qty) toast(`Pul yetmadi: faqat ${last.qty} dona tayyorlandi`, 'error');
+          draw();
+        } catch (err) { toast(err.message, 'error'); btn.disabled = false; }
+      });
+    }
+  };
+  on(el, 'click', '[data-start]', () => { started = true; draw(); });
+  on(el, 'click', '[data-restart]', () => { decisions = []; result = null; started = true; draw(); });
+  on(el, 'click', '[data-finish]', async (e, b) => {
+    b.disabled = true;
+    try { draw(await submit({ decisions })); } catch (err) { toast(err.message, 'error'); b.disabled = false; }
+  });
+  draw();
 }

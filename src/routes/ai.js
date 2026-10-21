@@ -149,8 +149,20 @@ Takrorlanishi kerak bo'lgan kartochkalar: ${snap.due_cards}`,
       .map((m) => ({ role: m.role, content: m.content.slice(0, 4000) }));
     if (!messages.length || messages[messages.length - 1].role !== 'user') badRequest('Savol yozing');
     if (messages[0].role !== 'user') messages.shift();
-    const mode = b.mode === 'explain' ? 'explain' : 'socratic';
-    const system = `Sen "${course.title}" fanidan AI-yordamchi (tyutor)san. ${UZ}
+    const ROLES = {
+      bank: "Sen tijorat bankining tajribali kredit mutaxassisisan. Talaba (tadbirkor) sendan biznes krediti so'ramoqda. Rol o'yinini o'tkaz: bir vaqtda bitta savol ber (kredit maqsadi, summa, qaytarish manbai, pul oqimi, garov, tajriba, xavflar), javoblarni tanqidiy tekshir, raqamlarni so'ra. Talaba \"yakunlaymiz\" desa yoki 8–10 savoldan keyin: kredit bo'yicha qaror (ma'qullandi / shartli / rad etildi), sabablari va yaxshilash bo'yicha 3 ta maslahat ber.",
+      investor: "Sen talabchan, lekin xayrixoh startap investorisan. Talaba senga o'z biznes g'oyasini taqdim etmoqda (pitch). Bir vaqtda bitta qiyin savol ber: muammo, bozor hajmi, raqobat, biznes-model, unit-ekonomika, jamoa, mablag' sarflanishi, chiqish strategiyasi. Talaba \"yakunlaymiz\" desa: investitsiya qarori, 3 ta kuchli tomon va 3 ta zaif tomon.",
+      customer: "Sen shubhali xaridorsan. Talaba (sotuvchi) senga mahsulotini sotmoqchi. Haqiqiy xaridor kabi qisqa javob ber va e'tirozlar bildir: \"qimmat\", \"keyin olaman\", \"kerak emas\", \"ishonmayman\", \"boshqa joyda arzon\". Sotuvchi yaxshi ishlasa — asta-sekin yumshab, xarid qil. Talaba \"yakunlaymiz\" desa: sotuv muloqotini baholab, 3 ta maslahat ber.",
+    };
+    const mode = ROLES[b.mode] ? b.mode : b.mode === 'explain' ? 'explain' : 'socratic';
+    let projectCtx = '';
+    if (ROLES[mode]) {
+      const pr = await first(ctx.env, 'SELECT data FROM projects WHERE user_id = ? AND course_id = ?', u.id, courseId);
+      if (pr?.data && pr.data !== '{}') projectCtx = `\n\nTalabaning biznes loyihasi (ma'lumot uchun):\n${truncate(pr.data, 5000)}`;
+    }
+    const system = ROLES[mode]
+      ? `${ROLES[mode]} ${UZ} Javoblaring qisqa bo'lsin (1–4 gap), rolni buzma.${projectCtx}`
+      : `Sen "${course.title}" fanidan AI-yordamchi (tyutor)san. ${UZ}
 ${mode === 'socratic'
     ? "Sokratik usulda ishlaysan: tayyor javobni darhol berma, yo'naltiruvchi savollar, ishoralar va qadamma-qadam fikrlash orqali o'quvchini javobga olib kel. Agar o'quvchi tushunchani tushuntirishni so'rasa — sodda tilda, misol bilan tushuntir."
     : "Tushunchalarni sodda tilda, hayotiy misollar, o'xshatishlar va qisqa xulosa bilan tushuntir."}
@@ -162,7 +174,12 @@ Fan haqida: ${course.description || ''}${lessonCtx}`;
       return json({ reply });
     } catch (e) {
       if (e instanceof AIUnavailable) {
-        return json({ reply: "AI-yordamchi hozircha ulanmagan. Administrator Workers AI yoki ANTHROPIC_API_KEY ni sozlashi kerak. Savolingizni o'qituvchingizga yuboring.", offline: true });
+        const OFFLINE = {
+          bank: "🏦 (AI ulanmagan — namunaviy savollar) Bank xodimi sizdan so'raydi: 1) Kredit nima uchun va qancha kerak? 2) Oylik sof pul oqimingiz qancha va kredit to'lovi undan necha foiz? 3) Qanday garov yoki kafillik bera olasiz? 4) Savdo rejadan 30% kam bo'lsa, qarzni qanday qaytarasiz? 5) Bu sohada qanday tajribangiz bor? Javoblaringizni yozib, o'qituvchi bilan muhokama qiling.",
+          investor: "💼 (AI ulanmagan — namunaviy savollar) Investor so'raydi: 1) Muammo qanchalik katta va buni qanday isbotlaysiz? 2) Bozor hajmi (TAM/SAM/SOM) qancha? 3) Bitta mijozni jalb qilish qancha turadi va undan qancha foyda olasiz? 4) Raqobatchilardan ustunligingiz nimada? 5) Mablag'ni nimaga sarflaysiz va 12 oyda qanday natija bo'ladi?",
+          customer: "🛍️ (AI ulanmagan — namunaviy e'tirozlar) Xaridor: \"Qimmat ekan\", \"Keyinroq olaman\", \"Menga hozir kerak emas\", \"Onlayn olishga ishonmayman\", \"Bozorda arzonrog'i bor\". Har biriga tinglash → aniqlashtirish → foydani ko'rsatish → yakunlash tartibida javob yozing.",
+        };
+        return json({ reply: OFFLINE[mode] || "AI-yordamchi hozircha ulanmagan. Administrator Workers AI yoki ANTHROPIC_API_KEY ni sozlashi kerak. Savolingizni o'qituvchingizga yuboring.", offline: true });
       }
       throw e;
     }

@@ -13,6 +13,7 @@ export const TYPES = {
   case: { icon: '💼', name: 'Keys', desc: 'Vaziyatli masala tahlili; AI baholaydi' },
   essay: { icon: '🖋️', name: 'Esse / refleksiya', desc: 'Erkin javob; AI baholaydi' },
   board: { icon: '🧠', name: 'Interaktiv doska', desc: "Metod asosida jamoaviy ish (aqliy hujum, Venn, INSERT…)" },
+  simulation: { icon: '🎲', name: "Simulyatsiya o'yini", desc: "Biznes o'yini: narx, hajm va reklama bo'yicha qarorlar (JSON orqali sozlanadi)" },
 };
 
 export const LESSON_KINDS = {

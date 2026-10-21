@@ -3,6 +3,7 @@ import { html, setHTML, md, progressBar, modal, formData, toast, timeAgo, confir
 import { isTeacher, navigate, reload as rerender } from '../app.js';
 import { typeIcon, typeName, LESSON_KINDS } from '../types.js';
 import { joinGroupDialog, loadRecommendations } from './dashboard.js';
+import { renderResources, renderProjectTab } from './resources.js';
 
 export async function coursesView(view, ctx) {
   const { courses } = await api.get('/api/courses');
@@ -126,7 +127,7 @@ export async function courseView(view, ctx) {
   const totalActs = course.modules.reduce((n, m) => n + m.lessons.reduce((k, l) => k + l.activities.length, 0), 0);
   const totalLessons = course.modules.reduce((n, m) => n + m.lessons.length, 0);
   const hours = course.modules.reduce((n, m) => n + m.lessons.reduce((k, l) => k + (l.hours || 0), 0), 0);
-  const tabs = [['content', '📘 Mundarija'], ['syllabus', '📄 Fan dasturi'], ['news', "📢 E'lonlar"], ...(t ? [['groups', '👥 Guruhlar']] : [['ai', '🤖 Tavsiyalar']])];
+  const tabs = [['content', '📘 Mundarija'], ['syllabus', '📄 Fan dasturi'], ['resources', '📚 Resurslar'], ['project', t ? '💼 Loyihalar' : '💼 Biznes loyiham'], ['news', "📢 E'lonlar"], ...(t ? [['groups', '👥 Guruhlar']] : [['ai', '🤖 Tavsiyalar']])];
 
   setHTML(view, html`
     <div class="course-hero" style="background:linear-gradient(135deg, ${course.color}, ${course.color}cc 60%, #1e1b4b)">
@@ -149,6 +150,8 @@ export async function courseView(view, ctx) {
   else if (tab === 'syllabus') renderSyllabus(body, course);
   else if (tab === 'news') await renderNews(body, course, t);
   else if (tab === 'groups' && t) renderGroups(body, course);
+  else if (tab === 'resources') await renderResources(body, course, t);
+  else if (tab === 'project') await renderProjectTab(body, course, t);
   else if (tab === 'ai') {
     setHTML(body, html`<div class="card"><div id="reco"></div></div>`);
     loadRecommendations(body.querySelector('#reco'), course.id);

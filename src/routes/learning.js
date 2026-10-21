@@ -3,6 +3,7 @@ import { json, readJson, str, int, badRequest, notFound, fail, forbidden, parseJ
 import { requireUser, isTeacher } from '../lib/auth.js';
 import { assertCourseView, assertTeachesStudent } from '../lib/access.js';
 import { ACTIVITY_TYPES, autoGrade, answerToText } from '../lib/grading.js';
+import { simulate } from '../lib/simulation.js';
 import { gradeOpenAnswer } from '../lib/ai.js';
 import { awardXP, checkBadges, XP_BASE } from '../lib/gamification.js';
 import { visibleCourses } from './courses.js';
@@ -94,6 +95,17 @@ export default function (r) {
     const xp = await xpForResult(ctx.env, u, act, pct, prevPct);
     const badges = await checkBadges(ctx.env, u.id);
     return json({ result: { id, score, max: maxPoints, details, ai: aiFeedback, status, xp, badges, attempt: (prev?.n || 0) + 1 } });
+  });
+
+  // Simulyatsiya: raundlar natijasini hisoblash (baholamasdan)
+  r.post('/api/activities/:id/simulate', async (ctx) => {
+    const u = requireUser(ctx);
+    const act = await first(ctx.env, "SELECT * FROM activities WHERE id = ? AND type = 'simulation'", Number(ctx.params.id));
+    if (!act) notFound();
+    await assertCourseView(ctx.env, u, act.course_id);
+    const b = await readJson(ctx.req);
+    const decisions = Array.isArray(b.decisions) ? b.decisions.slice(0, 20) : [];
+    return json({ result: simulate(parseJSON(act.content, {}), decisions) });
   });
 
   r.get('/api/activities/:id/submissions', async (ctx) => {

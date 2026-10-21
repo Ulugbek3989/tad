@@ -117,4 +117,4 @@ export async function checkBadges(env, userId) {
 }
 
 /** Mashg'ulot turi bo'yicha maksimal XP. */
-export const XP_BASE = { quiz: 50, matching: 25, ordering: 25, fillblank: 25, classify: 25, lab: 80, practical: 60, case: 70, essay: 50, slides: 10, reading: 10, flashcards: 15, board: 10 };
+export const XP_BASE = { simulation: 60, quiz: 50, matching: 25, ordering: 25, fillblank: 25, classify: 25, lab: 80, practical: 60, case: 70, essay: 50, slides: 10, reading: 10, flashcards: 15, board: 10 };

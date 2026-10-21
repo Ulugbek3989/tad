@@ -401,6 +401,27 @@ function boardEditor(methods) {
   };
 }
 
+// --- Vizual muharriri bo'lmagan turlar uchun JSON muharriri ---
+const JSON_DEFAULTS = {
+  simulation: {
+    game: 'mikrobiznes', product: 'Mahsulot nomi', round_label: 'Hafta', intro: "O'yin sharti va boshlang'ich ma'lumotlar.",
+    rounds: 6, start_cash: 3000000, unit_cost: 60000, fixed_cost: 400000, price_ref: 120000,
+    base_demand: 35, elasticity: 1.8, ad_boost: 0.6, ad_half: 250000, tax_rate: 0.04,
+    season: [1, 1, 1.1, 1.5, 0.8, 1.2], target_profit: 9000000,
+    events: [{ round: 3, text: "Xomashyo 15% qimmatladi", unit_cost_mult: 1.15 }],
+  },
+};
+function jsonEditor(type) {
+  return {
+    render: (c) => html`<div class="field"><label>Mazmun (JSON)</label>
+      <textarea name="json_content" class="code" rows="18">${JSON.stringify(Object.keys(c || {}).length ? c : JSON_DEFAULTS[type] || {}, null, 2)}</textarea>
+      ${type === 'simulation' ? html`<div class="hint">base_demand — narx price_ref bo'lganda haftalik talab; elasticity — talabning narxga sezgirligi; ad_boost/ad_half — reklama ta'siri; season — haftalik mavsumiy koeffitsiyentlar; target_profit — to'liq ball uchun foyda. Talab parametrlari o'quvchiga ko'rsatilmaydi.</div>` : ''}</div>`,
+    read: (f) => {
+      try { return JSON.parse(f.elements.json_content.value); } catch { toast("JSON noto'g'ri", 'error'); throw new Error('JSON'); }
+    },
+  };
+}
+
 // --- Test muharriri (vizual) ---
 function quizEditor() {
   let qs = [];
@@ -482,7 +503,7 @@ async function activityEditor(act, lesson, onSaved) {
   const { methods } = await getMethods();
   const isNew = !act.id;
   const type = act.type;
-  const editor = type === 'quiz' ? quizEditor() : type === 'board' ? boardEditor(methods) : EDITORS[type];
+  const editor = type === 'quiz' ? quizEditor() : type === 'board' ? boardEditor(methods) : EDITORS[type] || jsonEditor(type);
   const canAI = ['quiz', 'flashcards', 'matching', 'ordering', 'fillblank', 'case', 'practical', 'lab', 'slides'].includes(type);
   modal({
     title: `${typeIcon(type)} ${isNew ? 'Yangi' : 'Tahrirlash'}: ${typeName(type)}`,

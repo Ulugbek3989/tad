@@ -7,7 +7,7 @@ export function authView(root, { mode, query }) {
   setHTML(root, html`<div class="auth-wrap">
     <section class="auth-hero">
       <div style="font-size:3rem">🎓</div>
-      <h1>Fanni chuqur o'zlashtirish platformasi</h1>
+      <h1 id="hero-title">Fanni chuqur o'zlashtirish platformasi</h1>
       <p style="opacity:.9;font-size:1.05rem">Dunyoning eng yaxshi ta'lim platformalari tajribasi asosida: Coursera'ning tuzilmasi, Khan Academy'ning to'liq o'zlashtirish yondashuvi, Duolingo'ning rag'batlantirish tizimi va Anki'ning intervalli takrorlashi — bitta platformada.</p>
       <ul style="opacity:.95;padding-left:1.2em">
         <li>📊 Taqdimot slaydlari, ma'ruzalar va video darslar</li>
@@ -15,7 +15,9 @@ export function authView(root, { mode, query }) {
         <li>🧩 Interaktiv mashg'ulotlar va testlar</li>
         <li>🤖 Sun'iy intellekt yordamida baholash va shaxsiy tavsiyalar</li>
         <li>🏆 XP, darajalar, nishonlar va reyting</li>
-        <li>🧭 25+ pedagogik metod va dars vositalari</li>
+        <li>💼 Biznes loyiha ish maydoni: g'oyadan tayyor biznes-rejagacha</li>
+        <li>🧮 Biznes kalkulyatorlari, 🎲 simulyatsiya o'yinlari va AI rol o'yinlari</li>
+        <li>🧭 30 ta pedagogik metod va dars vositalari</li>
       </ul>
     </section>
     <section class="auth-form">
@@ -35,6 +37,10 @@ export function authView(root, { mode, query }) {
       </div>
     </section>
   </div>`);
+  api.get('/api/public/info').then((i) => {
+    const h = root.querySelector('#hero-title');
+    if (i.tagline && h) h.textContent = i.tagline;
+  }).catch(() => {});
   const form = root.querySelector('#auth-form');
   form.addEventListener('submit', async (e) => {
     e.preventDefault();

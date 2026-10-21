@@ -1,14 +1,15 @@
-// Jadvallar mavjud bo'lmasa, birinchi so'rovda ularni yaratadi (migratsiya idempotent).
-import schema from '../../migrations/0001_init.sql';
+// Jadvallarni Worker ishga tushgandan keyingi birinchi so'rovda yaratadi.
+// Barcha migratsiyalar idempotent (IF NOT EXISTS), shuning uchun har bir izolyatda bir marta bajariladi.
+import m1 from '../../migrations/0001_init.sql';
+import m2 from '../../migrations/0002_projects.sql';
 
+const MIGRATIONS = [m1, m2];
 let ready = null;
 
 export function ensureSchema(env) {
   if (!ready) {
     ready = (async () => {
-      const t = await env.DB.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'recommendations'").first();
-      if (t) return;
-      const statements = schema
+      const statements = MIGRATIONS.join(';\n')
         .replace(/--.*$/gm, '')
         .split(';')
         .map((s) => s.trim())

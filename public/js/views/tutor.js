@@ -41,7 +41,7 @@ function draw() {
   const msgs = histories.get(key()) || [];
   setHTML(panel, html`<div class="head"><span style="font-size:1.3rem">🤖</span><div style="flex:1;min-width:0"><strong>AI-yordamchi</strong><div class="small" style="opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${context.title || ''}</div></div>
       <select id="tutor-mode" style="width:auto;padding:4px 6px;font-size:.8rem;background:rgba(255,255,255,.2);color:#fff;border:0">
-        <option value="socratic" ${mode === 'socratic' ? 'selected' : ''}>Sokratik</option><option value="explain" ${mode === 'explain' ? 'selected' : ''}>Tushuntirish</option></select>
+        ${[['socratic', 'Sokratik tyutor'], ['explain', 'Tushuntirish'], ['bank', "🏦 Rol o'yini: bank xodimi"], ['investor', "💼 Rol o'yini: investor"], ['customer', "🛍️ Rol o'yini: xaridor"]].map(([k, l]) => html`<option value="${k}" ${mode === k ? 'selected' : ''} style="color:#111">${l}</option>`)}</select>
       <button class="btn ghost sm" id="tutor-close" style="color:#fff">✕</button></div>
     <div class="msgs" id="tutor-msgs">
       ${!msgs.length ? html`<div class="msg assistant">Salom! Men shu dars bo'yicha yordamchingizman. Tushunmagan joyingizni so'rang — men sizni javobga yo'naltiraman. 🙂
@@ -52,7 +52,11 @@ function draw() {
   const box = panel.querySelector('#tutor-msgs');
   box.scrollTop = box.scrollHeight;
   panel.querySelector('#tutor-close').addEventListener('click', toggle);
-  panel.querySelector('#tutor-mode').addEventListener('change', (e) => { mode = e.target.value; });
+  panel.querySelector('#tutor-mode').addEventListener('change', (e) => {
+    mode = e.target.value;
+    const ROLE_START = { bank: "Assalomu alaykum! Men biznes krediti olmoqchiman.", investor: "Assalomu alaykum! Biznes g'oyamni taqdim etmoqchiman.", customer: "Assalomu alaykum! Sizga mahsulotimizni taklif qilmoqchiman." };
+    if (ROLE_START[mode]) { histories.set(key(), []); send(ROLE_START[mode]); }
+  });
   panel.querySelectorAll('[data-suggest]').forEach((b) => b.addEventListener('click', () => send(b.dataset.suggest)));
   const form = panel.querySelector('#tutor-form');
   form.addEventListener('submit', (e) => { e.preventDefault(); send(form.elements.q.value); });

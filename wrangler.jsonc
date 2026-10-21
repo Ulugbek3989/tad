@@ -33,6 +33,9 @@
 
   "vars": {
     "APP_NAME": "TAD Ta'lim platformasi",
+    "APP_TAGLINE": "«Tadbirkorlik asoslari» fanini amaliy o'zlashtirish platformasi: g'oyadan biznes-reja himoyasigacha",
+    // Birinchi administrator ro'yxatdan o'tganda avtomatik yuklanadigan kurs (src/data/catalog.js)
+    "DEFAULT_COURSE": "tadbirkorlik-asoslari",
     // Workers AI modeli (ANTHROPIC_API_KEY berilmagan bo'lsa ishlatiladi)
     "AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
     // ANTHROPIC_API_KEY maxfiy kaliti o'rnatilsa, shu Claude modeli ishlatiladi

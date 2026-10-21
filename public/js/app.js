@@ -13,6 +13,8 @@ import { reviewView } from './views/review.js';
 import { profileView, notificationsView, adminView } from './views/profile.js';
 import { aiStudioView } from './views/aistudio.js';
 import { mountTutor, setTutorContext } from './views/tutor.js';
+import { projectView } from './views/project.js';
+import { calcView } from './views/calc.js';
 
 export const state = { user: null, route: null };
 
@@ -37,6 +39,9 @@ const routes = [
   ['/methods/:key', methodView],
   ['/tools', toolsView],
   ['/ai', aiStudioView],
+  ['/courses/:id/project', projectView],
+  ['/calc', calcView],
+  ['/project', myProjectRedirect],
   ['/profile', profileView],
   ['/users/:id', profileView],
   ['/notifications', notificationsView],
@@ -46,6 +51,17 @@ const routes = [
   const re = new RegExp('^' + pattern.replace(/:(\w+)/g, (_, k) => { keys.push(k); return '([^/]+)'; }) + '$');
   return { re, keys, view };
 });
+
+/** O'quvchining birinchi kursidagi biznes loyihasiga yo'naltirish. */
+async function myProjectRedirect(view) {
+  const { courses } = await api.get('/api/courses');
+  if (!courses.length) {
+    setHTML(view, html`<div class="empty"><div class="big">💼</div><h2>Biznes loyiha</h2><p>Loyiha ustida ishlash uchun avval fanga (guruhga) qo'shiling.</p></div>`);
+    return;
+  }
+  const c = courses.find((x) => /tadbirkor/i.test(x.title)) || courses[0];
+  location.replace(`#/courses/${c.id}/project`);
+}
 
 function parseHash() {
   const h = location.hash.replace(/^#/, '') || '/';
@@ -76,7 +92,7 @@ function navLinks() {
     ['Asosiy', [
       ['/', '🏠', 'Bosh sahifa'],
       ['/courses', '📚', t ? 'Kurslar' : 'Mening fanlarim'],
-      ...(t ? [] : [['/review', '🃏', 'Takrorlash'], ['/assignments', '📝', "Qo'shimcha topshiriqlar"], ['/leaderboard', '🏆', 'Reyting']]),
+      ...(t ? [] : [['/project', '💼', 'Biznes loyiham'], ['/review', '🃏', 'Takrorlash'], ['/assignments', '📝', "Qo'shimcha topshiriqlar"], ['/leaderboard', '🏆', 'Reyting']]),
     ]],
     ...(t ? [['O\'qituvchi', [
       ['/groups', '👥', 'Guruhlar va jurnal'],
@@ -86,6 +102,7 @@ function navLinks() {
     ]]] : []),
     ['Metodika', [
       ['/methods', '🧭', 'Metodlar kutubxonasi'],
+      ['/calc', '🧮', 'Biznes kalkulyatorlari'],
       ...(t ? [['/tools', '🧰', 'Dars vositalari']] : []),
     ]],
     ['Shaxsiy', [
