@@ -117,7 +117,7 @@ Takrorlanishi kerak bo'lgan kartochkalar: ${snap.due_cards}`,
         advice = {
           summary: `Kurs bo'yicha bajarilish: ${snap.progress}%. ${snap.weak.length ? `${snap.weak.length} ta mashg'ulotda natija 60% dan past.` : 'Natijalaringiz yaxshi!'}`,
           strengths: snap.strong.slice(0, 3).map((s) => s.title),
-          focus: snap.weak.slice(0, 3).map((s) => s.lesson || s.title),
+          focus: [...new Set(snap.weak.map((s) => s.lesson || s.title))].slice(0, 3),
           tips: [
             "Har kuni 10 daqiqa kartochkalarni takrorlang (intervalli takrorlash).",
             "Xato qilgan test savollaringiz izohini o'qib, testni qayta ishlang.",
