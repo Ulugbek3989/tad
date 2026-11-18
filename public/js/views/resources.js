@@ -1,7 +1,7 @@
 // Kurs resurslari: atamalar lug'ati, shablonlar, rasmiy manbalar, qo'shimcha keyslar
 import { api } from '../api.js';
 import { html, setHTML, md, modal, toast, on, download, progressBar, timeAgo } from '../ui.js';
-import { reload as rerender } from '../app.js';
+import { reload as rerender, isTeacher } from '../app.js';
 
 export async function renderResources(body, course, t, initialTab = 'glossary') {
   const { resources: r } = await api.get(`/api/courses/${course.id}/resources`);
@@ -12,7 +12,9 @@ export async function renderResources(body, course, t, initialTab = 'glossary') 
   const draw = () => {
     setHTML(body, html`
       ${t && course.can_edit ? html`<div class="row" style="justify-content:flex-end;margin-bottom:10px"><button class="btn sm" data-edit-res>✏️ Resurslarni tahrirlash (JSON)</button></div>` : ''}
-      ${empty ? html`<div class="card empty"><div class="big">📚</div><p>Bu kurs uchun resurslar hali qo'shilmagan.</p></div>` : html`
+      ${empty ? html`<div class="card empty"><div class="big">📚</div><p>Bu kurs uchun resurslar hali qo'shilmagan.</p>
+        ${t && course.can_edit ? html`<p class="small">"Tadbirkorlik asoslari" fani uchun tayyor resurslar to'plami bor: 108 ta atamali lug'at, 12 ta shablon, rasmiy manbalar va 6 ta keys.</p>
+          <button class="btn primary" data-load-catalog>📦 Tayyor resurslarni yuklash</button>` : ''}</div>` : html`
       <div class="tabs" style="margin-bottom:14px">${tabs.map(([k, l]) => html`<button data-rtab="${k}" class="${tab === k ? 'active' : ''}">${l}</button>`)}</div>
       <div id="rbody">${section()}</div>`}`);
     const inp = body.querySelector('#gq');
@@ -48,6 +50,11 @@ export async function renderResources(body, course, t, initialTab = 'glossary') 
   };
   draw();
   on(body, 'click', '[data-rtab]', (e, b) => { tab = b.dataset.rtab; draw(); });
+  on(body, 'click', '[data-load-catalog]', async (e, b) => {
+    b.disabled = true;
+    try { await api.post(`/api/courses/${course.id}/resources/catalog`, { key: 'tadbirkorlik-asoslari' }); toast('Resurslar yuklandi', 'success'); rerender(); }
+    catch (err) { toast(err.message, 'error'); b.disabled = false; }
+  });
   body.addEventListener('input', (e) => { if (e.target.id === 'gq') { q = e.target.value; setHTML(body.querySelector('#rbody'), section()); const i = body.querySelector('#gq'); i.focus(); i.setSelectionRange(q.length, q.length); } });
   on(body, 'click', '[data-tview]', (e, b) => {
     const x = r.templates[Number(b.dataset.tview)];
@@ -120,8 +127,8 @@ export async function resourcesPage(view, ctx) {
   const c = courses.find((x) => String(x.id) === ctx.query.c) || courses[0];
   setHTML(view, html`<div class="page-head"><div><h1>📚 Resurslar</h1><p>Atamalar lug'ati, shablonlar, rasmiy manbalar, qo'shimcha keyslar va biznes kalkulyatorlari</p></div>
       ${courses.length > 1 ? html`<select id="res-course" style="width:auto">${courses.map((x) => html`<option value="${x.id}" ${x.id === c.id ? 'selected' : ''}>${x.title}${x.code ? ` (${x.code})` : ''}</option>`)}</select>` : html`<span class="badge primary">${c.title}</span>`}</div>
-    ${!c.enrolled ? html`<div class="alert info small">Siz bu fan guruhiga hali qo'shilmagansiz — resurslar ochiq, lekin darslar, testlar va biznes loyiha uchun guruh kodi kerak.</div>` : ''}
+    ${!c.enrolled && !isTeacher() ? html`<div class="alert info small">Siz bu fan guruhiga hali qo'shilmagansiz — resurslar ochiq, lekin darslar, testlar va biznes loyiha uchun guruh kodi kerak.</div>` : ''}
     <div id="res-body"></div>`);
   view.querySelector('#res-course')?.addEventListener('change', (e) => { location.hash = `#/resources?c=${e.target.value}`; });
-  await renderResources(view.querySelector('#res-body'), { ...c, can_edit: false }, false, ctx.query.t || 'glossary');
+  await renderResources(view.querySelector('#res-body'), c, isTeacher(), ctx.query.t || 'glossary');
 }

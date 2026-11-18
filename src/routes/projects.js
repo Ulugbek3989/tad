@@ -6,6 +6,19 @@ import { assertCourseView, assertCourseEdit, assertCourseTeach, assertTeachesStu
 import { aiJSON, aiProvider, AIUnavailable, truncate } from '../lib/ai.js';
 import { awardXP, giveBadge } from '../lib/gamification.js';
 import { visibleCourses } from './courses.js';
+import { CATALOG } from '../data/catalog.js';
+
+const normTitle = (s) => String(s || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+
+/** Kurs katalogdagi tayyor kursga mos kelsa, uning resurslarini kursga saqlaydi va qaytaradi. */
+async function attachCatalogResources(env, course) {
+  const match = Object.values(CATALOG).find((c) => c.resources && (
+    (course.code && c.course.code && normTitle(c.course.code) === normTitle(course.code)) ||
+    normTitle(c.course.title) === normTitle(course.title)));
+  if (!match) return {};
+  await run(env, 'INSERT OR IGNORE INTO course_resources (course_id, data) VALUES (?, ?)', course.id, JSON.stringify(match.resources));
+  return match.resources;
+}
 
 /** Loyiha bo'limlari va "to'ldirilgan" deb hisoblash uchun minimal maydonlar soni. */
 export const PROJECT_SECTIONS = {
@@ -40,32 +53,49 @@ async function loadProject(env, userId, courseId) {
 
 export default function (r) {
   // ---- Kurs resurslari (lug'at, shablonlar, havolalar, adabiyotlar, keyslar) ----
-  // Resurslar ochiq material: kursga yozilgan har bir kishi hamda e'lon qilingan kurslar uchun barcha foydalanuvchilar ko'radi
+  // Resurslar ochiq material: kursga yozilgan har bir kishi hamda e'lon qilingan kurslar uchun barcha foydalanuvchilar ko'radi.
+  // Kursda resurslar saqlanmagan bo'lsa-yu, u katalogdagi tayyor kursga (kod yoki nom bo'yicha) mos kelsa, katalog resurslari ulanadi.
   r.get('/api/resources', async (ctx) => {
     const u = requireUser(ctx);
+    const teacher = isTeacher(u);
     const mine = new Set((await visibleCourses(ctx.env, u)).map((c) => c.id));
     const rows = await all(ctx.env,
-      `SELECT c.id, c.title, c.code, c.color, c.published, cr.data FROM course_resources cr JOIN courses c ON c.id = cr.course_id ORDER BY c.id`);
-    const courses = rows
-      .filter((c) => mine.has(c.id) || c.published)
-      .map((c) => {
-        const d = parseJSON(c.data, {});
-        return { id: c.id, title: c.title, code: c.code, color: c.color, enrolled: mine.has(c.id),
-          counts: { glossary: d.glossary?.length || 0, templates: d.templates?.length || 0, cases: d.cases?.length || 0, links: (d.links || []).reduce((n, g) => n + (g.items?.length || 0), 0) } };
-      })
-      .filter((c) => Object.values(c.counts).some(Boolean))
-      .sort((a, b) => Number(b.enrolled) - Number(a.enrolled));
+      `SELECT c.id, c.title, c.code, c.color, c.published, c.owner_id, cr.data FROM courses c
+         LEFT JOIN course_resources cr ON cr.course_id = c.id ORDER BY c.id`);
+    const courses = [];
+    for (const c of rows) {
+      if (!(mine.has(c.id) || c.published)) continue;
+      const d = c.data ? parseJSON(c.data, {}) : await attachCatalogResources(ctx.env, c);
+      const counts = { glossary: d.glossary?.length || 0, templates: d.templates?.length || 0, cases: d.cases?.length || 0, links: (d.links || []).reduce((n, g) => n + (g.items?.length || 0), 0) };
+      const canEdit = u.role === 'admin' || (teacher && c.owner_id === u.id);
+      if (!Object.values(counts).some(Boolean) && !canEdit) continue;
+      courses.push({ id: c.id, title: c.title, code: c.code, color: c.color, enrolled: mine.has(c.id), can_edit: canEdit, counts });
+    }
+    courses.sort((a, b) => Number(b.enrolled) - Number(a.enrolled) || Number(b.can_edit) - Number(a.can_edit));
     return json({ courses });
   });
 
   r.get('/api/courses/:id/resources', async (ctx) => {
     const u = requireUser(ctx);
     const id = Number(ctx.params.id);
-    const course = await first(ctx.env, 'SELECT id, published FROM courses WHERE id = ?', id);
+    const course = await first(ctx.env, 'SELECT id, title, code, published FROM courses WHERE id = ?', id);
     if (!course) notFound('Kurs topilmadi');
     if (!course.published) await assertCourseView(ctx.env, u, id);
     const row = await first(ctx.env, 'SELECT data FROM course_resources WHERE course_id = ?', id);
-    return json({ resources: parseJSON(row?.data, {}) });
+    return json({ resources: row ? parseJSON(row.data, {}) : await attachCatalogResources(ctx.env, course) });
+  });
+
+  // O'qituvchi: katalogdagi tayyor resurslarni kursga yuklash
+  r.post('/api/courses/:id/resources/catalog', async (ctx) => {
+    const u = requireTeacher(ctx);
+    const id = Number(ctx.params.id);
+    await assertCourseEdit(ctx.env, u, id);
+    const b = await readJson(ctx.req);
+    const src = CATALOG[b.key || 'tadbirkorlik-asoslari'];
+    if (!src?.resources) badRequest('Katalogda bunday resurslar topilmadi');
+    await run(ctx.env, `INSERT INTO course_resources (course_id, data, updated_at) VALUES (?, ?, datetime('now'))
+      ON CONFLICT (course_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`, id, JSON.stringify(src.resources));
+    return json({ ok: true });
   });
 
   r.put('/api/courses/:id/resources', async (ctx) => {
