@@ -12,3 +12,6 @@
 
 /css/*
   Cache-Control: no-cache
+
+/resources/taqdimotlar/index.json
+  Cache-Control: no-cache

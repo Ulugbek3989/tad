@@ -4,11 +4,12 @@ import { html, setHTML, md, modal, toast, on, download, progressBar, timeAgo } f
 import { reload as rerender, isTeacher } from '../app.js';
 
 export async function renderResources(body, course, t, initialTab = 'glossary') {
-  const { resources: r } = await api.get(`/api/courses/${course.id}/resources`);
-  const empty = !r || !Object.keys(r).length;
-  let tab = initialTab;
+  const [{ resources: r0 }, pres] = await Promise.all([api.get(`/api/courses/${course.id}/resources`), loadPresentations(course)]);
+  const r = r0 || {};
+  const empty = !Object.keys(r).length && !pres;
+  let tab = initialTab === 'glossary' && pres ? 'presentations' : initialTab;
   let q = '';
-  const tabs = [['glossary', `📖 Lug'at (${r.glossary?.length || 0})`], ['templates', `📋 Shablonlar (${r.templates?.length || 0})`], ['links', '🔗 Manbalar'], ['cases', `💼 Keyslar (${r.cases?.length || 0})`], ['tools', '🧮 Kalkulyatorlar']];
+  const tabs = [...(pres ? [['presentations', `📊 Taqdimotlar (${pres.decks.length})`]] : []), ['glossary', `📖 Lug'at (${r.glossary?.length || 0})`], ['templates', `📋 Shablonlar (${r.templates?.length || 0})`], ['links', '🔗 Manbalar'], ['cases', `💼 Keyslar (${r.cases?.length || 0})`], ['tools', '🧮 Kalkulyatorlar']];
   const draw = () => {
     setHTML(body, html`
       ${t && course.can_edit ? html`<div class="row" style="justify-content:flex-end;margin-bottom:10px"><button class="btn sm" data-edit-res>✏️ Resurslarni tahrirlash (JSON)</button></div>` : ''}
@@ -21,6 +22,14 @@ export async function renderResources(body, course, t, initialTab = 'glossary') 
     if (inp) { inp.focus(); inp.setSelectionRange(q.length, q.length); }
   };
   const section = () => {
+    if (tab === 'presentations' && pres) {
+      return html`<p class="small muted">Har bir mavzu bo'yicha ma'ruza taqdimoti: platformada slaydma-slayd o'qish yoki PowerPoint (PPTX) / PDF formatida yuklab olish mumkin.</p>
+        <div class="grid grid-auto">${pres.decks.map((d, i) => html`<div class="card method-card" style="cursor:default">
+          <div class="row between"><span style="font-size:1.6rem">📊</span><span class="badge primary">${d.n}-mavzu</span></div>
+          <strong>${d.title}</strong><span class="small muted">${d.slides.length} slayd · ma'ruza taqdimoti</span>
+          <div class="row" style="margin-top:auto;flex-wrap:wrap;gap:6px"><button class="btn sm primary" data-pview="${i}">👁 Ko'rish</button>
+            <a class="btn sm" href="${d.file}" download>⬇ PPTX</a><a class="btn sm" href="${d.pdf}" target="_blank" rel="noopener">📄 PDF</a></div></div>`)}</div>`;
+    }
     if (tab === 'glossary') {
       const list = (r.glossary || []).filter((g) => !q || (g.term + ' ' + g.def).toLowerCase().includes(q.toLowerCase()));
       return html`<input type="search" id="gq" placeholder="🔎 Atamani qidiring…" value="${q}" style="max-width:360px;margin-bottom:12px">
@@ -65,6 +74,7 @@ export async function renderResources(body, course, t, initialTab = 'glossary') 
         el.querySelector('[data-copy-t]').addEventListener('click', async () => { try { await navigator.clipboard.writeText(x.content); toast('Nusxalandi', 'success'); } catch { toast("Nusxalab bo'lmadi", 'error'); } });
       } });
   });
+  on(body, 'click', '[data-pview]', (e, b) => showDeck(pres.decks[Number(b.dataset.pview)]));
   on(body, 'click', '[data-tdl]', (e, b) => dl(r.templates[Number(b.dataset.tdl)]));
   on(body, 'click', '[data-edit-res]', () => modal({
     title: 'Resurslarni tahrirlash', size: 'lg',
@@ -77,6 +87,35 @@ export async function renderResources(body, course, t, initialTab = 'glossary') 
       try { await api.put(`/api/courses/${course.id}/resources`, { resources: data }); close(); toast('Saqlandi', 'success'); rerender(); } catch (err) { toast(err.message, 'error'); }
     }),
   }));
+}
+
+// Statik taqdimotlar to'plami (public/resources/taqdimotlar/index.json) — kurs kodi yoki nomi mos kelsa ko'rsatiladi
+let presCache;
+const norm = (s) => String(s || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+async function loadPresentations(course) {
+  try {
+    presCache ??= fetch('/resources/taqdimotlar/index.json').then((res) => (res.ok ? res.json() : null)).catch(() => null);
+    const p = await presCache;
+    if (!p?.decks?.length) return null;
+    const match = (course.code && norm(course.code) === norm(p.code)) || norm(course.title) === norm(p.course);
+    return match ? p : null;
+  } catch { return null; }
+}
+
+function showDeck(d) {
+  let i = 0;
+  const slideHTML = () => html`<div class="row between" style="margin-bottom:8px"><span class="badge">${i + 1} / ${d.slides.length}</span></div>
+    <h2 style="margin-top:0">${d.slides[i].title}</h2><div class="prose">${md(d.slides[i].body)}</div>`;
+  modal({ title: `${d.n}-mavzu. ${d.title}`, size: 'lg', body: html`<div id="pslide">${slideHTML()}</div>`,
+    footer: html`<a class="btn" href="${d.file}" download>⬇ PPTX</a><a class="btn" href="${d.pdf}" target="_blank" rel="noopener">📄 PDF</a>
+      <span style="flex:1"></span><button class="btn" data-pp>◀ Oldingi</button><button class="btn primary" data-pn>Keyingi ▶</button>`,
+    onMount: (el) => {
+      const box = el.querySelector('#pslide');
+      const go = (k) => { i = Math.max(0, Math.min(d.slides.length - 1, i + k)); setHTML(box, slideHTML()); box.scrollIntoView({ block: 'start' }); };
+      el.querySelector('[data-pp]').addEventListener('click', () => go(-1));
+      el.querySelector('[data-pn]').addEventListener('click', () => go(1));
+      el.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1); });
+    } });
 }
 
 function dl(x) {
@@ -125,7 +164,7 @@ export async function resourcesPage(view, ctx) {
     return;
   }
   const c = courses.find((x) => String(x.id) === ctx.query.c) || courses[0];
-  setHTML(view, html`<div class="page-head"><div><h1>📚 Resurslar</h1><p>Atamalar lug'ati, shablonlar, rasmiy manbalar, qo'shimcha keyslar va biznes kalkulyatorlari</p></div>
+  setHTML(view, html`<div class="page-head"><div><h1>📚 Resurslar</h1><p>Mavzular bo'yicha taqdimotlar, atamalar lug'ati, shablonlar, rasmiy manbalar, qo'shimcha keyslar va biznes kalkulyatorlari</p></div>
       ${courses.length > 1 ? html`<select id="res-course" style="width:auto">${courses.map((x) => html`<option value="${x.id}" ${x.id === c.id ? 'selected' : ''}>${x.title}${x.code ? ` (${x.code})` : ''}</option>`)}</select>` : html`<span class="badge primary">${c.title}</span>`}</div>
     ${!c.enrolled && !isTeacher() ? html`<div class="alert info small">Siz bu fan guruhiga hali qo'shilmagansiz — resurslar ochiq, lekin darslar, testlar va biznes loyiha uchun guruh kodi kerak.</div>` : ''}
     <div id="res-body"></div>`);

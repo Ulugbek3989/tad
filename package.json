@@ -12,6 +12,7 @@
     "check": "node --check src/index.js && for f in src/lib/*.js src/routes/*.js src/data/*.js public/js/*.js public/js/views/*.js; do node --check \"$f\" || exit 1; done"
   },
   "devDependencies": {
+    "pptxgenjs": "^3.12.0",
     "wrangler": "4.151.0"
   }
 }
