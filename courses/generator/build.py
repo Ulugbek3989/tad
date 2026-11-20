@@ -10,6 +10,41 @@ from resources import TEMPLATES, LINKS, CASES
 
 MODULES = [MODULE1, MODULE2, MODULE3, MODULE4, MODULE5]
 LESSONS = [l for m in MODULES for l in m['lessons']]
+
+# --- Darslik asosidagi qo'shimcha testlar (har bir mavzu testida kamida 15 savol) ---
+import os
+from tests_extra import EXTRA as EXTRA_TESTS, SHAKLLAR
+for i, l in enumerate(LESSONS, start=1):
+    l['_quiz'].extend(EXTRA_TESTS.get(i, []))
+    for a in l['activities']:
+        if a['type'] == 'quiz' and a['content']['questions'] is l['_quiz']:
+            a['content']['time_limit_min'] = 25
+            a['instructions'] = f"{len(l['_quiz'])} ta savol, 25 daqiqa, 3 ta urinish. Har bir javobdan keyin izohni o'qing."
+    assert len(l['_quiz']) >= 15, (i, len(l['_quiz']))
+
+# --- Taqdimotlar (courses/presentations → public/resources/taqdimotlar/index.json) darslarga ulanadi ---
+_PRES = os.path.join(os.path.dirname(__file__), '..', '..', 'public', 'resources', 'taqdimotlar', 'index.json')
+if os.path.exists(_PRES):
+    _decks = {d['n']: d for d in json.load(open(_PRES, encoding='utf-8'))['decks']}
+    for i, l in enumerate(LESSONS, start=1):
+        d = _decks.get(i)
+        if not d:
+            continue
+        sl = next(a for a in l['activities'] if a['type'] == 'slides')
+        deck_act = {"type": "slides", "title": f"Taqdimot: {d['title']} ({len(d['slides'])} slayd)", "max_points": 0,
+                    "instructions": f"PPTX: {d['file']} · PDF: {d['pdf']}",
+                    "content": {"slides": [{"title": x['title'], "body": x['body'], "notes": ""} for x in d['slides']]}}
+        if i == 11:  # darslikdagi 11-bob (pul oqimi) saqlanadi, fan dasturidagi 11-mavzu taqdimoti qo'shiladi
+            l['activities'].insert(l['activities'].index(sl) + 1, deck_act)
+        else:
+            l['activities'][l['activities'].index(sl)] = deck_act
+
+# 11-mavzu: fan dasturidagi "Tadbirkorlik faoliyati va uning shakllari" bo'yicha alohida test
+_l11 = LESSONS[10]
+_qi = max(i for i, a in enumerate(_l11['activities']) if a['type'] == 'quiz')
+_l11['activities'].insert(_qi + 1, {"type": "quiz", "title": "Test: Tadbirkorlik faoliyati va uning shakllari", "max_points": 10, "attempts": 3,
+    "instructions": f"{len(SHAKLLAR)} ta savol, 25 daqiqa, 3 ta urinish. Har bir javobdan keyin izohni o'qing.",
+    "content": {"time_limit_min": 25, "shuffle": True, "show_answers": True, "questions": SHAKLLAR}})
 assert len(LESSONS) == 15
 
 TN = [

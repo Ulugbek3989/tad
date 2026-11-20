@@ -7,6 +7,19 @@ import { fileURLToPath } from 'node:url';
 import part1 from './content-1.mjs';
 import part2 from './content-2.mjs';
 import part3 from './content-3.mjs';
+import extra1 from './extra-1.mjs';
+import extra2 from './extra-2.mjs';
+import extra3 from './extra-3.mjs';
+
+// Qo'shimcha slaydlar (darslik asosida): har biri "after" — asosiy slaydlar ro'yxatidagi indeksdan keyin qo'yiladi
+const EXTRA = { ...extra1, ...extra2, ...extra3 };
+function mergeExtras(deck) {
+  const ex = EXTRA[deck.n];
+  if (!ex) return deck;
+  const base = deck.slides.map((sl, i) => ({ ...sl, _k: i }));
+  const add = (ex.slides || []).map((sl, j) => ({ ...sl, _k: (sl.after ?? base.length - 1) + 0.01 * (j + 1) }));
+  return { ...deck, glossary: ex.glossary || [], slides: [...base, ...add].sort((a, b) => a._k - b._k) };
+}
 
 const require = createRequire(import.meta.url);
 const pptxgen = require('pptxgenjs');
@@ -210,6 +223,61 @@ const R = {
   },
 };
 
+Object.assign(R, {
+  case(s, d) {
+    const y0 = lead(s, d.lead);
+    const lw = 5.5;
+    const gap = 0.35;
+    s.addShape('roundRect', { x: MX, y: y0, w: lw, h: BOTTOM - y0, fill: { color: HEX.dk2 }, line: { color: HEX.dk2 }, rectRadius: 0.08, objectName: 'case-situation' });
+    s.addText('Vaziyat', { x: MX + 0.3, y: y0 + 0.15, w: lw - 0.6, h: 0.45, fontSize: 18, bold: true, color: 'FBBF24', margin: 0, isTextBox: true, fontFace: THEME.headFontFace });
+    const qh = 0.42 * d.questions.length + 0.55;
+    s.addText(d.situation, { x: MX + 0.3, y: y0 + 0.65, w: lw - 0.6, h: BOTTOM - y0 - 0.85 - qh, fontSize: 14, color: 'FFFFFF', valign: 'top', margin: 0, isTextBox: true });
+    const qy = BOTTOM - qh - 0.15;
+    s.addText('Muhokama savollari', { x: MX + 0.3, y: qy, w: lw - 0.6, h: 0.4, fontSize: 15, bold: true, color: 'A7D7D0', margin: 0, isTextBox: true });
+    s.addText(d.questions.map((q, i) => ({ text: q, options: { bullet: { type: 'number' }, breakLine: i < d.questions.length - 1 } })), { x: MX + 0.3, y: qy + 0.4, w: lw - 0.6, h: qh - 0.45, fontSize: 13, color: 'E2F3F0', valign: 'top', margin: 0, paraSpaceAfter: 3, isTextBox: true });
+    const rx = MX + lw + gap;
+    const rw = CW - lw - gap;
+    s.addText('Namunaviy yechim', { x: rx, y: y0, w: rw, h: 0.45, fontSize: 18, bold: true, color: HEX.dk2, margin: 0, isTextBox: true, fontFace: THEME.headFontFace });
+    const n = d.solution.length;
+    const sg = 0.15;
+    const sh = (BOTTOM - y0 - 0.55 - sg * (n - 1)) / n;
+    d.solution.forEach(([h, t], i) => {
+      const y = y0 + 0.55 + i * (sh + sg);
+      s.addShape('roundRect', { x: rx, y, w: rw, h: sh, fill: { color: HEX.lt2 }, line: { color: HEX.lt2 }, rectRadius: 0.06 });
+      badge(s, rx + 0.15, y + 0.12, i + 1, { d: 0.4, size: 13, fill: i === n - 1 ? HEX.accent2 : HEX.accent1 });
+      s.addText([{ text: `${h}. `, options: { bold: true, color: HEX.dk2 } }, { text: t, options: { color: '1E293B' } }], { x: rx + 0.7, y: y + 0.06, w: rw - 0.85, h: sh - 0.12, fontSize: 13.5, valign: 'middle', margin: 0, isTextBox: true });
+    });
+  },
+  chart(s, d) {
+    const y0 = lead(s, d.lead);
+    const cw = 7.3;
+    const c = d.chart;
+    const type = c.type === 'line' ? 'line' : 'bar';
+    s.addChart(type, c.series.map((x) => ({ name: x.name, labels: c.labels, values: x.values })), {
+      x: MX, y: y0, w: cw, h: BOTTOM - y0, barDir: 'col', barGapWidthPct: 60,
+      chartColors: [HEX.accent1, HEX.accent2, HEX.accent3, HEX.accent4],
+      showTitle: true, title: c.title, titleFontSize: 14, titleColor: HEX.dk2, titleFontFace: '+mj-lt',
+      showValue: c.showValue !== false, dataLabelPosition: type === 'bar' ? 'outEnd' : 't', dataLabelFontSize: 10, dataLabelColor: '334155', dataLabelFormatCode: c.format || '#,##0.##',
+      showLegend: c.series.length > 1, legendPos: 'b', legendFontSize: 11, legendFontFace: '+mn-lt',
+      catAxisLabelColor: '475569', valAxisLabelColor: '64748B', catAxisLabelFontSize: 11, valAxisLabelFontSize: 10,
+      catAxisLabelFontFace: '+mn-lt', valAxisLabelFontFace: '+mn-lt', dataLabelFontFace: '+mn-lt',
+      valGridLine: { color: 'E2E8F0', size: 0.75 }, catGridLine: { style: 'none' },
+      lineSize: 2.5, lineDataSymbolSize: 7, valAxisTitle: c.yTitle || '', showValAxisTitle: !!c.yTitle, valAxisTitleFontSize: 11, valAxisTitleColor: '64748B',
+      objectName: 'chart',
+    });
+    const rx = MX + cw + 0.35;
+    const rw = CW - cw - 0.35;
+    const n = d.points.length;
+    const g = 0.18;
+    const ph = (BOTTOM - y0 - g * (n - 1)) / n;
+    d.points.forEach(([h, t], i) => {
+      const y = y0 + i * (ph + g);
+      s.addShape('roundRect', { x: rx, y, w: rw, h: ph, fill: { color: i === n - 1 ? 'FEF3C7' : HEX.lt2 }, line: { color: i === n - 1 ? 'FEF3C7' : HEX.lt2 }, rectRadius: 0.06 });
+      s.addText([{ text: h, options: { bold: true, color: HEX.dk2, breakLine: true, fontSize: 15 } }, { text: t, options: { color: '1E293B', fontSize: 13 } }], { x: rx + 0.2, y: y + 0.08, w: rw - 0.4, h: ph - 0.16, valign: 'middle', margin: 0, isTextBox: true, fontFace: THEME.bodyFontFace });
+    });
+  },
+});
+
 // ---------- platforma uchun markdown ----------
 function toMarkdown(d) {
   const L = [];
@@ -218,13 +286,16 @@ function toMarkdown(d) {
   if (d.t === 'cards' || d.t === 'steps') d.items.forEach(([h, t, ex], i) => L.push(`${d.t === 'steps' ? `${i + 1}.` : '-'} **${h}.** ${t}${ex ? ` *Misol: ${ex}*` : ''}`));
   if (d.t === 'table') { L.push(`| ${d.head.join(' | ')} |`, `|${d.head.map(() => '---').join('|')}|`); d.rows.forEach((r) => L.push(`| ${r.join(' | ')} |`)); }
   if (d.t === 'compare') { [d.left, d.right].forEach((side) => { L.push(`**${side.h}**`); side.items.forEach((t) => L.push(`- ${t}`)); L.push(''); }); }
+  if (d.t === 'case') { L.push(`> **Vaziyat.** ${d.situation}`, '', '**Muhokama savollari:**'); d.questions.forEach((q, i) => L.push(`${i + 1}. ${q}`)); L.push('', '**Namunaviy yechim:**'); d.solution.forEach(([h, t], i) => L.push(`${i + 1}. **${h}.** ${t}`)); }
+  if (d.t === 'chart') { const c = d.chart; L.push(`**${c.title}**`, '', `| Ko'rsatkich | ${c.labels.join(' | ')} |`, `|---|${c.labels.map(() => '---').join('|')}|`); c.series.forEach((x) => L.push(`| ${x.name} | ${x.values.map((v) => v.toLocaleString('ru-RU')).join(' | ')} |`)); L.push(''); d.points.forEach(([h, t]) => L.push(`- **${h}.** ${t}`)); }
   if (d.t === 'formula') { L.push(`> **${d.formula}**`, ''); d.where.forEach(([k, v]) => L.push(`- **${k}** — ${v}`)); L.push('', d.example); }
   return L.join('\n').trim();
 }
 
 const fileName = (deck) => `M${String(deck.n).padStart(2, '0')}-taqdimot.pptx`;
 
-async function buildDeck(deck) {
+async function buildDeck(deck0) {
+  const deck = mergeExtras(deck0);
   const { pres } = definePres();
   pres.title = `${deck.n}-mavzu. ${deck.title}`;
   const md = [];
@@ -260,6 +331,26 @@ async function buildDeck(deck) {
     md.push({ title: d.title, body: toMarkdown(d) });
   }
 
+  // 3a. Atamalar lug'ati (darslik asosida)
+  if (deck.glossary?.length) {
+    s = pres.addSlide({ masterName: 'CONTENT' });
+    s.addText("Asosiy atamalar lug'ati", { placeholder: 'title' });
+    const g = deck.glossary;
+    const half = Math.ceil(g.length / 2);
+    const gap = 0.3;
+    const cw = (CW - gap) / 2;
+    [g.slice(0, half), g.slice(half)].forEach((col, ci) => {
+      const rh = (BOTTOM - TOP) / half;
+      col.forEach(([t, dsc], i) => {
+        const x = MX + ci * (cw + gap);
+        const y = TOP + i * rh;
+        s.addShape('roundRect', { x, y: y + 0.04, w: cw, h: rh - 0.1, fill: { color: i % 2 ? 'F8FAFC' : HEX.lt2 }, line: { color: i % 2 ? 'E2E8F0' : HEX.lt2 }, rectRadius: 0.05 });
+        s.addText([{ text: `${t} — `, options: { bold: true, color: HEX.accent1 } }, { text: dsc, options: { color: '1E293B' } }], { x: x + 0.2, y: y + 0.06, w: cw - 0.4, h: rh - 0.14, fontSize: 13.5, valign: 'middle', margin: 0, isTextBox: true });
+      });
+    });
+    md.push({ title: "Asosiy atamalar lug'ati", body: g.map(([t, dsc]) => `- **${t}** — ${dsc}`).join('\n') });
+  }
+
   // 4. Xulosa
   s = pres.addSlide({ masterName: 'DARK' });
   s.addText('Xulosa', { placeholder: 'title' });
@@ -285,12 +376,12 @@ async function buildDeck(deck) {
   s = pres.addSlide({ masterName: 'CONTENT' });
   s.addText('Adabiyotlar va manbalar', { placeholder: 'title' });
   const lit = [
+    "Saloxitdinov Sh.F., Fayzullayeva S.F. Tadbirkorlik asoslari: darslik. — Jizzax: D-PRESS SERVICES, 2026. — 363 b.",
     "O'zbekiston Respublikasining \"Tadbirkorlik faoliyati erkinligining kafolatlari to'g'risida\"gi Qonuni (amaldagi tahrir) — lex.uz",
     "O'zbekiston Respublikasining Soliq kodeksi (2019, O'RQ–599) va Fuqarolik kodeksi — lex.uz",
     "Raxmatullaeva D.R. Tadbirkorlikni tashkil etish. O'quv qo'llanma. — T.: Tafakkur bo'stoni, 2022",
-    "Raxmatullaeva D.R. Kichik biznes va xususiy tadbirkorlikni tashkil etish. O'quv qo'llanma. — T., 2025",
-    'Osterwalder A., Pigneur Y. Business Model Generation. — Wiley, 2010',
-    'Ries E. The Lean Startup. — Crown Business, 2011',
+    'Hisrich R., Peters M., Shepherd D. Entrepreneurship. — McGraw-Hill; Kotler Ph. Marketing Management. — Pearson',
+    'Osterwalder A., Pigneur Y. Business Model Generation. — Wiley, 2010; Ries E. The Lean Startup. — Crown Business, 2011',
     'Axborot manbalari: my.gov.uz, my.soliq.uz, stat.uz, finlit.uz',
   ];
   s.addText(lit.map((t, i) => ({ text: t, options: { bullet: { type: 'number' }, breakLine: i < lit.length - 1 } })), { x: MX, y: TOP, w: CW, h: BOTTOM - TOP, fontSize: 16, color: '0F172A', valign: 'top', margin: 0, paraSpaceAfter: 8, isTextBox: true });
@@ -306,7 +397,7 @@ const decks = [...part1, ...part2, ...part3].filter((d) => !only.length || only.
 const meta = [];
 for (const d of decks) {
   meta.push(await buildDeck(d));
-  console.log(`✓ ${d.n}-mavzu: ${d.slides.length + 5} slayd`);
+  console.log(`✓ ${d.n}-mavzu: ${meta[meta.length - 1].slides.length} slayd`);
 }
 if (!only.length) {
   // Platforma "Resurslar → Taqdimotlar" bo'limi shu faylni o'qiydi
