@@ -13,7 +13,7 @@ LESSONS = [l for m in MODULES for l in m['lessons']]
 
 # --- Darslik asosidagi qo'shimcha testlar (har bir mavzu testida kamida 15 savol) ---
 import os
-from tests_extra import EXTRA as EXTRA_TESTS, SHAKLLAR
+from tests_extra import EXTRA as EXTRA_TESTS
 for i, l in enumerate(LESSONS, start=1):
     l['_quiz'].extend(EXTRA_TESTS.get(i, []))
     for a in l['activities']:
@@ -34,17 +34,8 @@ if os.path.exists(_PRES):
         deck_act = {"type": "slides", "title": f"Taqdimot: {d['title']} ({len(d['slides'])} slayd)", "max_points": 0,
                     "instructions": f"PPTX: {d['file']} · PDF: {d['pdf']}",
                     "content": {"slides": [{"title": x['title'], "body": x['body'], "notes": ""} for x in d['slides']]}}
-        if i == 11:  # darslikdagi 11-bob (pul oqimi) saqlanadi, fan dasturidagi 11-mavzu taqdimoti qo'shiladi
-            l['activities'].insert(l['activities'].index(sl) + 1, deck_act)
-        else:
-            l['activities'][l['activities'].index(sl)] = deck_act
+        l['activities'][l['activities'].index(sl)] = deck_act
 
-# 11-mavzu: fan dasturidagi "Tadbirkorlik faoliyati va uning shakllari" bo'yicha alohida test
-_l11 = LESSONS[10]
-_qi = max(i for i, a in enumerate(_l11['activities']) if a['type'] == 'quiz')
-_l11['activities'].insert(_qi + 1, {"type": "quiz", "title": "Test: Tadbirkorlik faoliyati va uning shakllari", "max_points": 10, "attempts": 3,
-    "instructions": f"{len(SHAKLLAR)} ta savol, 25 daqiqa, 3 ta urinish. Har bir javobdan keyin izohni o'qing.",
-    "content": {"time_limit_min": 25, "shuffle": True, "show_answers": True, "questions": SHAKLLAR}})
 assert len(LESSONS) == 15
 
 TN = [
@@ -180,7 +171,7 @@ Semestr oxirida siz **o'z biznes g'oyangiz bo'yicha to'liq biznes-reja** tayyorl
 | 2. Huquq va soliq | M4–M5 | Huquqiy shakl, ro'yxatdan o'tish modeli, soliq rejimi |
 | 3. Model va mijoz | M6–M7 | 9 blokli biznes-model, mijoz portreti, raqobat tahlili |
 | 4. Bozorga chiqish | M8–M10 | Kontent-reja, sotuv ssenariysi, narx va zararsizlik nuqtasi |
-| 5. Moliya va himoya | M11–M15 | Pul oqimi, foyda-zarar, biznes-reja, xavflar, pitch |
+| 5. Moliya va himoya | M11–M15 | Tadbirkorlik shakllari, foyda-zarar, biznes-reja, xavflar, pitch |
 
 ## Platformada qanday o'qiysiz?
 1. **Ma'ruza matni va taqdimot** — darsdan oldin yoki dars davomida;
@@ -277,6 +268,10 @@ course = {
     "literature": LITERATURE,
   },
   "resources": RESOURCES,
+  "migrations": {"lessons": [{"from": "11. Biznesda pul oqimini rejalashtirish: kirim, chiqim va mablag' jalb qilish",
+                              "to": "11. Tadbirkorlik faoliyati va uning shakllari",
+                              "remove": [{"type": "slides", "title_prefix": "Taqdimot: Biznesda pul oqimini"},
+                                         {"type": "quiz", "title_prefix": "Mavzu bo'yicha test"}]}]},
   "modules": [{"title": "Kirish", "description": "Fan dasturi, semestr loyihasi va baholash tizimi.", "lessons": [INTRO]}] + MODULES + [NAZORAT],
 }
 out = sys.argv[1]

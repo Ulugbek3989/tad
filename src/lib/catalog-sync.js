@@ -44,11 +44,32 @@ async function syncCourse(env, courseId, data) {
   const acts = (await env.DB.prepare('SELECT id, lesson_id, type, title, position FROM activities WHERE course_id = ? ORDER BY position, id').bind(courseId).all()).results || [];
   const byLesson = new Map(lessons.map((l) => [norm(l.title), l.id]));
   const stmts = [];
+  const fullUpdate = new Set();
+  // Katalogdagi dars almashtirilgan bo'lsa (masalan, 11-mavzu): eski darsni yangisiga aylantiramiz
+  const catLessons = (data.modules || []).flatMap((m) => m.lessons || []);
+  for (const mg of data.migrations?.lessons || []) {
+    const lessonId = byLesson.get(norm(mg.from));
+    const target = catLessons.find((l) => norm(l.title) === norm(mg.to));
+    if (!lessonId || !target || byLesson.has(norm(mg.to))) continue;
+    for (const rule of mg.remove || []) {
+      const victim = acts.find((a) => a.lesson_id === lessonId && a.type === rule.type && String(a.title).startsWith(rule.title_prefix) && !a._removed);
+      if (victim) {
+        victim._removed = true;
+        await env.DB.prepare('DELETE FROM activities WHERE id = ?').bind(victim.id).run();
+      }
+    }
+    await env.DB.prepare('UPDATE lessons SET title = ?, summary = ?, content = ?, methods = ? WHERE id = ?')
+      .bind(target.title, target.summary ?? null, target.content ?? null, JSON.stringify(target.methods || []), lessonId).run();
+    byLesson.delete(norm(mg.from));
+    byLesson.set(norm(mg.to), lessonId);
+    fullUpdate.add(lessonId);
+  }
   for (const m of data.modules || []) {
     for (const l of m.lessons || []) {
       const lessonId = byLesson.get(norm(l.title));
       if (!lessonId) continue;
-      const dbActs = acts.filter((a) => a.lesson_id === lessonId);
+      const dbActs = acts.filter((a) => a.lesson_id === lessonId && !a._removed);
+      const full = fullUpdate.has(lessonId);
       const used = new Set();
       const order = [];
       const seen = {};
@@ -59,11 +80,11 @@ async function syncCourse(env, courseId, data) {
         if (match) {
           used.add(match.id);
           order.push(match.id);
-          if (SYNC_TYPES.has(a.type)) {
-            stmts.push(env.DB.prepare('UPDATE activities SET title = ?, instructions = ?, content = ?, max_points = ?, attempts = ? WHERE id = ?')
-              .bind(a.title, a.instructions ?? null, JSON.stringify(a.content || {}), a.max_points ?? 10, a.attempts ?? 0, match.id));
+          if (full || SYNC_TYPES.has(a.type)) {
+            stmts.push(env.DB.prepare('UPDATE activities SET rubric = ?, title = ?, instructions = ?, content = ?, max_points = ?, attempts = ? WHERE id = ?')
+              .bind(a.rubric ?? null, a.title, a.instructions ?? null, JSON.stringify(a.content || {}), a.max_points ?? 10, a.attempts ?? 0, match.id));
           }
-        } else if (SYNC_TYPES.has(a.type)) {
+        } else if (full || SYNC_TYPES.has(a.type)) {
           order.push({ a });
         }
       }

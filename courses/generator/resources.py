@@ -195,7 +195,7 @@ ___ shahri · "___" ________ 20__ y.
 
 **Qoidalar:** har slaydda bitta fikr; kam matn; har slaydda bitta raqam; 3 marta mashq qiling.
 """},
- {"key": "cashflow", "title": "Pul oqimi jadvali (3 oy)", "format": "csv", "topic": "M11",
+ {"key": "cashflow", "title": "Pul oqimi jadvali (3 oy)", "format": "csv", "topic": "M12",
   "desc": "Excel / Google Sheets'da ochiladi: kirim, chiqim, sof pul oqimi va qoldiq.",
   "content": "Ko'rsatkich;1-oy;2-oy;3-oy\nOy boshidagi qoldiq;;;\nSavdo tushumi;;;\nKredit / o'z mablag'i;;;\nJami kirim;;;\nXomashyo va materiallar;;;\nIsh haqi;;;\nIjara;;;\nReklama;;;\nSoliqlar;;;\nKredit to'lovi;;;\nUskuna (investitsiya);;;\nBoshqa chiqimlar;;;\nJami chiqim;;;\nSof pul oqimi (kirim - chiqim);;;\nOy oxiridagi qoldiq;;;\n"},
  {"key": "ledger", "title": "Daromad-xarajat daftari", "format": "csv", "topic": "M5",
@@ -241,7 +241,7 @@ CASES = [
  {"title": "\"Smart repetitor\": onlayn ta'lim startapi", "topic": "M2, M15", "tag": "Pivot",
   "body": "Talabalar guruhi maktab o'quvchilari uchun video darslar ilovasini yaratishga 8 oy sarfladi. Ishga tushirilgandan keyin 2 oyda atigi 15 ta pullik obunachi bo'ldi. Mijozlar bilan suhbatlar shuni ko'rsatdiki, ota-onalar video emas, jonli nazorat va natijani ko'rishni xohlaydi. Jamoa ilovani to'xtatib, kichik guruhli onlayn darslar va haftalik hisobotga o'tdi — 3 oyda 120 o'quvchi.",
   "questions": ["Jamoa qanday xatoga yo'l qo'ydi? MVP qanday bo'lishi kerak edi?", "Pivot qaysi ma'lumotga asoslandi?", "Yangi biznes-modelning daromad manbai va xarajatlari qanday?"]},
- {"title": "\"Qishloq asali\": kredit va kassa uzilishi", "topic": "M3, M11", "tag": "Muvaffaqiyatsiz holat",
+ {"title": "\"Qishloq asali\": kredit va kassa uzilishi", "topic": "M3, M12", "tag": "Muvaffaqiyatsiz holat",
   "body": "Asalarichi 80 mln so'm kredit olib, 100 ta yangi uya sotib oldi. Kredit to'lovi oyiga 4 mln so'm, lekin asal faqat yozning oxirida sotiladi. Kuz-qish oylarida daromad bo'lmagani uchun to'lovlar kechikdi, penya hisoblandi va asalarichi asalni arzon narxda ulgurji sotishga majbur bo'ldi.",
   "questions": ["Asosiy xato nimada edi — kreditning o'zidami yoki uning shartlarida?", "Mavsumiy biznes uchun pul oqimi jadvali qanday tuzilishi kerak edi?", "Qanday kredit shartlari (imtiyozli davr, to'lov jadvali) mos kelardi?"]},
  {"title": "\"Moda ustaxonasi\": soliq va hujjatlar", "topic": "M4, M5", "tag": "Huquqiy xavf",

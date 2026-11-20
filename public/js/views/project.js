@@ -39,7 +39,7 @@ export const SECTIONS = [
   { key: 'marketing', icon: '📣', title: 'Marketing va savdo', ref: 'A8–A9', fields: [
     ['channels', 'Kanallar va ularni tanlash sababi', 'textarea'], ['content', 'Kontent-reja (asosiy g\'oyalar)', 'textarea'],
     ['budget', 'Oylik reklama byudjeti, so\'m', 'number'], ['sales', "Savdo jarayoni va e'tirozlarga javoblar", 'textarea'], ['delivery', 'Yetkazib berish usuli', 'text']] },
-  { key: 'cashflow', icon: '💵', title: 'Pul oqimi (3 oy)', ref: 'A11', layout: 'cashflow' },
+  { key: 'cashflow', icon: '💵', title: 'Pul oqimi (3 oy)', ref: 'A13', layout: 'cashflow' },
   { key: 'risks', icon: '⚠️', title: 'Xavflar matritsasi', ref: 'A14', layout: 'risks' },
   { key: 'funding', icon: '🏦', title: 'Moliyalashtirish', ref: 'A3', fields: [
     ['amount', 'Kerakli mablag\', so\'m', 'number'], ['source', 'Manba (o\'z mablag\'i, kredit, grant, investor, dastur)', 'text'],

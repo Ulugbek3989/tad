@@ -1,78 +1,102 @@
 from common import *
 
-T11_LECT = """# Biznesda pul oqimini rejalashtirish: kirim, chiqim va mablag' jalb qilish
+T11_LECT = """# Tadbirkorlik faoliyati va uning shakllari
 
-## Pul oqimi nima?
-**Pul oqimi (cash flow)** — ma'lum davrda biznesga kirgan va undan chiqqan **real pul** harakati.
-> Muhim: **foyda ≠ pul**. Biznes qog'ozda foydali bo'lsa ham, pul yetishmasligi (kassa uzilishi) sababli yopilishi mumkin. Masalan, mijoz to'lovni 30 kun kechiktirsa, siz esa xomashyoni oldindan to'lashingiz kerak.
+## Tadbirkorlik faoliyati va uning subyektlari
+**Tadbirkorlik faoliyati** — jismoniy va yuridik shaxslarning o'z tavakkalchiligi va mulkiy javobgarligi ostida, foyda (daromad) olishga qaratilgan, qonun hujjatlarida taqiqlanmagan tashabbuskor faoliyati.
+**Subyektlar:** davlat ro'yxatidan o'tgan **jismoniy shaxslar** (yakka tartibdagi tadbirkorlar, o'zini o'zi band qilgan shaxslar) va **yuridik shaxslar** (MChJ, AJ, xususiy korxona va boshqalar).
+> Ro'yxatdan o'tmasdan muntazam daromad olish — **noqonuniy tadbirkorlik**: ma'muriy, ayrim hollarda jinoiy javobgarlikka olib keladi.
 
-## Pul oqimining turlari
-- **Operatsion** — asosiy faoliyatdan: savdo tushumi, xomashyo, maosh, soliq, ijara;
-- **Investitsion** — uskunalar, binolar sotib olish yoki sotish;
-- **Moliyaviy** — kredit olish va qaytarish, ta'sischilar mablag'i, dividendlar.
+## Tadbirkorlik faoliyatining belgilari
+- **Tashabbuskorlik** — faoliyat o'z xohishi va qarori bilan boshlanadi;
+- **Mustaqillik** — nima, kimga va qanday narxda sotishni o'zi hal qiladi;
+- **Tavakkalchilik** — natija kafolatlanmagan;
+- **Mulkiy javobgarlik** — majburiyatlar bo'yicha mol-mulki bilan javob beradi;
+- **Foydaga yo'nalganlik va muntazamlik** — bir martalik bitim emas;
+- **Qonuniylik** — ro'yxatdan o'tgan, qonunda taqiqlanmagan faoliyat.
 
-## Pul oqimi jadvali (byudjeti)
-| Ko'rsatkich | 1-oy | 2-oy | 3-oy |
-|---|---|---|---|
-| Oy boshidagi qoldiq | | | |
-| **+ Kirimlar** (savdo, kredit, o'z mablag'i) | | | |
-| **− Chiqimlar** (xomashyo, maosh, ijara, reklama, soliq, kredit to'lovi, uskuna) | | | |
-| **= Sof pul oqimi** (kirim − chiqim) | | | |
-| **Oy oxiridagi qoldiq** | | | |
-Oy oxiridagi qoldiq = oy boshidagi qoldiq + kirimlar − chiqimlar; u keyingi oyning boshlang'ich qoldig'i bo'ladi.
+## Mulkchilik shakllari bo'yicha
+| Shakl | Mazmuni | Misol |
+|---|---|---|
+| Xususiy | Mulk bir yoki bir necha fuqaroga tegishli | Oilaviy novvoyxona, o'quv markazi |
+| Jamoa | Mulk ishtirokchilar guruhiga birgalikda tegishli | Sheriklar MChJsi, kooperativ |
+| Davlat | Mulk davlatga tegishli | Davlat unitar korxonasi |
+| Aralash (qo'shma) | Turli mulkdorlar, jumladan xorijiy investorlar | Qo'shma korxona |
 
-## Kassa uzilishi va uning oldini olish
-Qoldiq **manfiy** bo'lgan oy — **kassa uzilishi** xavfi. Choralar:
-- mijozlardan **oldindan to'lov** yoki qisman avans olish;
-- yetkazib beruvchilar bilan **to'lov muddatini** uzaytirish;
-- ortiqcha **zaxirani** kamaytirish;
-- **zaxira fondi** — kamida 2–3 oylik doimiy xarajat;
-- o'z vaqtida **qisqa muddatli moliyalashtirish** (overdraft, kredit liniyasi).
+## Faoliyat turi bo'yicha
+- **Ishlab chiqarish** — tovar ishlab chiqarish, qayta ishlash, qurilish (tikuv sexi, non zavodi);
+- **Tijorat (savdo)** — sotib olib qayta sotish, vositachilik (do'kon, onlayn do'kon);
+- **Xizmat ko'rsatish** — sartaroshxona, ta'mirlash, ta'lim, turizm;
+- **Moliyaviy** — bank, sug'urta, mikromoliya (litsenziya asosida);
+- **Maslahat (konsalting)** — buxgalteriya, yuridik, marketing xizmatlari;
+- **Innovatsion** — yangi texnologiya va mahsulotlarni tijoratlashtirish (IT-startap).
 
-## Mablag' jalb qilish
-Pul oqimi jadvali **qachon va qancha** mablag' kerakligini ko'rsatadi. Manbalar: o'z jamg'armasi, oila, bank krediti, mikrokredit, grant, investor, lizing (3-mavzuga qarang).
+## Hajmi bo'yicha
+**Mikrofirma, kichik korxona, o'rta va yirik biznes** xodimlar soni va yillik aylanma bilan farqlanadi. Aniq chegaralar qonunchilikda belgilanadi va o'zgarib turadi — **lex.uz** dan tekshiring.
+> Kichik biznesning afzalliklari: tez qaror, moslashuvchanlik, mijozga yaqinlik, kam kapital, soddalashtirilgan soliq. Cheklovlari: moliyalashtirish qiyinligi, yuqori tannarx, bir-ikki kishiga bog'liqlik.
 
-## Iqtisodiy omillar ta'siri
-- **Inflyatsiya** — xarajatlar oshadi, pulning xarid qobiliyati pasayadi: narxlarni va zaxiralarni rejalashtirishda hisobga oling;
-- **Kredit foizlari** — qarz xarajatini oshiradi; Markaziy bank asosiy stavkasi o'zgarishi kredit narxiga ta'sir qiladi;
-- **Valyuta kursi** — import xomashyo narxiga ta'sir qiladi;
-- **Mavsumiylik** — savdo oylar bo'yicha notekis.
-> Rejani 3 ssenariyda tuzing: **optimistik, real, pessimistik**."""
+## Tashkiliy-huquqiy shakllar
+| Shakl | Asosiy xususiyati |
+|---|---|
+| O'zini o'zi band qilgan shaxs | Xodimsiz, o'z mehnati bilan; eng sodda ro'yxat |
+| Yakka tartibdagi tadbirkor (YaTT) | Yuridik shaxs emas; barcha mol-mulki bilan javob beradi |
+| Mas'uliyati cheklangan jamiyat (MChJ) | Ishtirokchilar (≤50) ulushi doirasida javob beradi |
+| Aksiyadorlik jamiyati (AJ) | Ustav fondi aksiyalarga bo'lingan; katta kapital jalb qiladi |
+| Xususiy korxona | Bitta mulkdor tashkil etadi va boshqaradi |
+| Oilaviy korxona | Oila a'zolarining ixtiyoriy ishtiroki va mulki asosida |
+| Fermer va dehqon xo'jaligi | Qishloq xo'jaligi mahsulotlari yetishtirish |
+| Unitar korxona | Mulk mulkdorda qoladi, korxonaga xo'jalik yuritish huquqida beriladi |
 
-T11_QUIZ = [
-    TF("Foydali biznesda pul yetishmasligi (kassa uzilishi) bo'lishi mumkin emas.", False, "Foyda va pul bir xil emas: to'lovlar kechiksa, foydali biznesda ham pul yetishmaydi."),
-    S("Kredit olish va qaytarish qaysi pul oqimiga kiradi?", ["Operatsion", "Investitsion", "Moliyaviy", "Hech qaysi"], 2, "Kredit va ta'sischilar mablag'i — moliyaviy faoliyat."),
-    S("Uskuna sotib olish qaysi pul oqimiga kiradi?", ["Operatsion", "Investitsion", "Moliyaviy", "Soliq"], 1, "Uzoq muddatli aktivlar — investitsion faoliyat."),
-    N("Oy boshidagi qoldiq 2 000 000, kirimlar 15 000 000, chiqimlar 16 500 000 so'm. Oy oxiridagi qoldiq necha so'm?", 500000, "2 000 000 + 15 000 000 − 16 500 000 = 500 000 so'm."),
-    M("Kassa uzilishining oldini olish choralarini belgilang.", ["Mijozlardan avans olish", "Yetkazib beruvchilarga to'lov muddatini uzaytirish", "Zaxira fondi yaratish", "Barcha pulni bitta uskunaga sarflash"], [0, 1, 2], "Pulni boshqarishda muvozanat va zaxira muhim."),
-    S("Inflyatsiya biznesga qanday ta'sir qiladi?", ["Xarajatlar kamayadi", "Xarajatlar oshadi va pulning xarid qobiliyati pasayadi", "Ta'sir qilmaydi", "Faqat eksportga ta'sir qiladi"], 1, "Inflyatsiya narxlarning umumiy o'sishi."),
-    S("Zaxira fondi odatda necha oylik doimiy xarajat hajmida tavsiya etiladi?", ["1 hafta", "2–3 oy", "5 yil", "Kerak emas"], 1, "Kamida 2–3 oylik doimiy xarajat."),
-    S("Pul oqimi rejasini qaysi ssenariylarda tuzish tavsiya etiladi?", ["Faqat optimistik", "Optimistik, real va pessimistik", "Faqat pessimistik", "Ssenariy kerak emas"], 1, "Uch ssenariy xavfga tayyor bo'lishga yordam beradi."),
-]
-T11_CARDS = [("Pul oqimi", "Davr mobaynida biznesga kirgan va chiqqan real pul harakati"),
-             ("Sof pul oqimi", "Kirimlar − chiqimlar"),
-             ("Kassa uzilishi", "Majburiyatlarni to'lash uchun pul yetishmay qolishi"),
-             ("Operatsion pul oqimi", "Asosiy faoliyatdan pul harakati (savdo, xomashyo, maosh)"),
-             ("Investitsion pul oqimi", "Uzoq muddatli aktivlarni sotib olish/sotish"),
-             ("Moliyaviy pul oqimi", "Kredit, ta'sischilar mablag'i, dividendlar"),
-             ("Inflyatsiya", "Narxlarning umumiy darajasining o'sishi"),
-             ("Zaxira fondi", "Kutilmagan holatlar uchun 2–3 oylik doimiy xarajat miqdoridagi pul")]
-T11 = lesson("11", "Biznesda pul oqimini rejalashtirish: kirim, chiqim va mablag' jalb qilish",
-    "Pul oqimi turlari, pul oqimi jadvali, kassa uzilishi, mablag' jalb qilish va iqtisodiy omillar (M11, A11).",
-    ["simulation", "fishbone", "workshop", "problem"], T11_LECT, T11_QUIZ, T11_CARDS,
-    [{"type": "classify", "title": "Pul oqimi turlari", "max_points": 10,
-      "content": {"categories": [{"name": "Operatsion", "items": ["Mijozdan savdo tushumi", "Xodimlarga maosh", "Xomashyo uchun to'lov"]},
-                                 {"name": "Investitsion", "items": ["Tikuv mashinasini sotib olish", "Eski uskunani sotish"]},
-                                 {"name": "Moliyaviy", "items": ["Bankdan kredit olish", "Kredit asosiy qarzini qaytarish", "Ta'sischining qo'shimcha hissasi"]}]}},
-     {"type": "case", "title": "Simulyatsiya: \"Jamg'arma o'yini\" — kassa uzilishi", "max_points": 10,
-      "rubric": "Muammo sababini to'g'ri aniqlash — 3; jadval bo'yicha hisob — 3; 3 ta real chora — 4.",
-      "content": {"scenario": "\"Shirin dunyo\" qandolat sexi to'yxonalarga tort yetkazadi. Sentabrda 40 mln so'mlik buyurtma oldi, lekin to'yxonalar **30 kundan keyin** to'laydi. Xomashyoni (22 mln so'm) esa **oldindan** to'lash kerak. Sex hisobida 8 mln so'm bor, oylik doimiy xarajatlar (ijara, maosh) — 12 mln so'm.",
-                  "questions": ["Sentabr oyi uchun pul oqimini hisoblang: oy oxirida qoldiq qancha bo'ladi?", "Biznes foydalimi? Nega baribir muammo bor?", "Kassa uzilishining oldini olish uchun 3 ta aniq chora taklif qiling."],
-                  "reference_answer": "Sentabr: 8 + 0 (tushum oktabrda) − 22 − 12 = −26 mln so'm — kassa uzilishi. Biznes foydali (40 − 22 − 12 = 6 mln foyda), lekin pul kechikib keladi. Choralar: to'yxonalardan 30–50% avans olish; yetkazib beruvchidan xomashyoni muddatli to'lovga olish; qisqa muddatli kredit/overdraft; buyurtmalarni bosqichma-bosqich qabul qilish."}}],
-    amaliy("A11", "3 oylik pul oqimi jadvali",
-        "1. O'z biznesingiz uchun **3 oylik pul oqimi jadvalini** tuzing (oy boshidagi qoldiq, kirimlar moddalari, chiqimlar moddalari, sof pul oqimi, oy oxiridagi qoldiq).\n2. **Qaysi oyda mablag' yetishmasligi** mumkinligini aniqlang.\n3. Yetishmovchilikni qoplash uchun **moliyalashtirish manbalarini** tanlang (summa, muddat, sabab).\n4. Pessimistik ssenariyni (savdo 30% kam) hisoblab ko'ring — biznes chidaydimi?",
-        "Jadval tuzilmasi to'g'ri va to'liq — 4; hisob-kitob to'g'ri — 2; yetishmovchilik oyi aniqlangan — 1; moliyalashtirish manbalari asoslangan — 2; pessimistik ssenariy — 1.",
-        ["Birinchi oyga boshlang'ich xarajatlarni (uskuna, ro'yxatdan o'tish, birinchi zaxira) kiriting", "Kredit to'lovlari ham chiqimga kiradi"]),
+## Tadbirkorning huquq, kafolat va majburiyatlari
+- **Huquqlar:** qonunda taqiqlanmagan har qanday faoliyat, mulkdan erkin foydalanish, shartnoma erkinligi, qonunga zid aralashuvdan himoya, davlat qo'llab-quvvatlashidan foydalanish;
+- **Majburiyatlar:** ro'yxatdan o'tish va litsenziyalash, soliqlarni o'z vaqtida to'lash, hisob va hisobot yuritish, xodimlar bilan mehnat shartnomasi, iste'molchilar huquqlari, sanitariya va ekologik talablarga rioya.
+
+## Tadbirkorlikda hamkorlik shakllari
+- **Franshiza** — sinalgan brend va tizimdan haq evaziga foydalanish;
+- **Kooperatsiya** — mustaqil tadbirkorlarning xarid, sotuv yoki ishlab chiqarishni birgalikda tashkil etishi;
+- **Klaster** — bir hududdagi xomashyodan tayyor mahsulotgacha bo'lgan korxonalar zanjiri;
+- **Qo'shma korxona** — mahalliy va xorijiy sheriklar kapitali va tajribasi;
+- **Subpudrat va autsorsing** — yirik kompaniya uchun ishning bir qismini bajarish;
+- **Biznes-inkubator, assotsiatsiyalar** — joy, mentorlik va tajriba almashish.
+
+## O'z shaklingizni tanlash algoritmi
+1. Faoliyat turi litsenziya talab qiladimi yoki faqat yuridik shaxsga ruxsat etilganmi?
+2. Yolg'izmi yoki sheriklar bormi?
+3. Javobgarlik xavfi qanchalik katta (shartnoma, kredit, xodimlar)?
+4. Kutilayotgan aylanma va mos soliq rejimi qaysi?
+5. Investor, filial yoki eksport rejasi bormi?
+> G'oya sinov bosqichida — o'zini o'zi band qilish yoki YaTT; barqaror mijoz, xodim va hamkor paydo bo'lgach — MChJ."""
+
+from tests_extra import SHAKLLAR as T11_QUIZ
+T11_CARDS = [("Tadbirkorlik subyekti", "Ro'yxatdan o'tgan YaTT, o'zini o'zi band qilgan shaxs yoki yuridik shaxs"),
+             ("Mulkchilik shakllari", "Xususiy, jamoa, davlat va aralash (qo'shma)"),
+             ("Tashkiliy-huquqiy shakl", "Javobgarlik, boshqaruv va hisobotni belgilovchi huquqiy ko'rinish: YaTT, MChJ, AJ va boshqalar"),
+             ("Kichik biznes", "Xodimlar soni va aylanmasi qonunda belgilangan chegaradan oshmaydigan subyektlar"),
+             ("Xususiy korxona", "Bitta mulkdor tomonidan tashkil etiladigan va boshqariladigan tijorat tashkiloti"),
+             ("Oilaviy korxona", "Oila a'zolarining ixtiyoriy ishtiroki va mulki asosidagi korxona"),
+             ("Unitar korxona", "Mulk mulkdorda qolib, korxonaga xo'jalik yuritish huquqida beriladigan korxona"),
+             ("Fermer xo'jaligi", "Uzoq muddatli ijaraga olingan yerda tovar qishloq xo'jaligi mahsuloti yetishtiruvchi yuridik shaxs"),
+             ("Kooperatsiya", "Mustaqil tadbirkorlarning xarid, sotuv yoki ishlab chiqarishni birgalikda tashkil etishi"),
+             ("Klaster", "Bir hududdagi xomashyodan tayyor mahsulotgacha bo'lgan bog'liq korxonalar zanjiri"),
+             ("Subpudrat", "Yirik buyurtmaning bir qismini boshqa korxonaga bajartirish"),
+             ("Davlat-xususiy sheriklik", "Infratuzilma va ijtimoiy xizmatlarni davlat va xususiy sektorning birgalikda moliyalashtirishi")]
+T11 = lesson("11", "Tadbirkorlik faoliyati va uning shakllari",
+    "Subyektlar, mulkchilik, faoliyat turi va hajm bo'yicha shakllar, tashkiliy-huquqiy shakllar, huquq va majburiyatlar, hamkorlik shakllari (M11, A11).",
+    ["cluster", "case_study", "problem", "workshop"], T11_LECT, T11_QUIZ, T11_CARDS,
+    [{"type": "classify", "title": "Tadbirkorlik faoliyati turlari", "max_points": 10,
+      "content": {"categories": [{"name": "Ishlab chiqarish", "items": ["Tikuv sexi", "Non zavodi", "Mebel ustaxonasi"]},
+                                 {"name": "Tijorat (savdo)", "items": ["Oziq-ovqat do'koni", "Ulgurji savdo", "Onlayn do'kon"]},
+                                 {"name": "Xizmat ko'rsatish", "items": ["Sartaroshxona", "Telefon ta'miri", "O'quv markazi"]},
+                                 {"name": "Moliyaviy va maslahat", "items": ["Mikromoliya tashkiloti", "Buxgalteriya autsorsingi", "Sug'urta agentligi"]}]}},
+     {"type": "case", "title": "Keys: oilaviy biznesdan klasterga", "max_points": 10,
+      "rubric": "Shakl to'g'ri tanlangan va asoslangan — 3; hamkorlik shakli taklif qilingan — 3; moliyalashtirish va kengayish yo'li real — 4.",
+      "content": {"scenario": "Jizzax viloyatidagi oila 2 gektar bog'ida o'rik yetishtiradi va bozorda xom holda arzon sotadi. Yosh bitiruvchi o'g'il **quritish sexi** ochib, mahsulotni qadoqlab sotmoqchi. Qo'shni **5 ta xo'jalik** ham xomashyo berishga tayyor. Oilada mablag' kam, lekin bog' va bino bor.",
+                  "questions": ["Boshlang'ich bosqichda qaysi tashkiliy-huquqiy shakl mos va nima uchun?", "Qo'shni xo'jaliklar bilan qanday hamkorlik shaklini tashkil etish mumkin?", "Qanday moliyalashtirish va kengayish yo'llari bor?"],
+                  "reference_answer": "Shakl: oilaviy korxona yoki MChJ — oila a'zolari ishtiroki, javobgarlik cheklanadi, kredit olish osonroq. Hamkorlik: qo'shnilar bilan oldindan narx kelishilgan yetkazib berish shartnomalari, umumiy sovutgich va qadoqlash uskunasi uchun kooperatsiya (keyinchalik kooperativ). Moliyalashtirish: \"Kelajakka qadam\" yoki \"Yoshlar biznesi\" krediti, uskuna uchun lizing. Kengayish: sertifikat olib eksport, hududiy klasterga qo'shilish, brend va tovar belgisi."}}],
+    amaliy("A11", "Tadbirkorlik shakllarini tahlil qilish va o'z shaklimni tanlash",
+        "1. Hududingizdagi **5 ta korxonani** tanlab, ularning **mulkchilik shakli, faoliyat turi, hajmi va tashkiliy-huquqiy shaklini** jadvalda tahlil qiling.\n2. O'z biznes g'oyangiz uchun **tashkiliy-huquqiy shaklni** 5 savollik algoritm (faoliyat turi, ta'sischilar, javobgarlik, hajm va soliq, kengayish) bo'yicha asoslab tanlang.\n3. Biznesingiz uchun foydali bo'lishi mumkin bo'lgan **hamkorlik shaklini** (franshiza, kooperatsiya, klaster, subpudrat) taklif qiling.\n4. Tadbirkor sifatidagi **asosiy majburiyatlaringiz** ro'yxatini tuzing.",
+        "Korxonalar tahlili to'liq va to'g'ri — 3; shakl tanlovi 5 savol bo'yicha asoslangan — 3; hamkorlik shakli real — 2; majburiyatlar ro'yxati — 2.",
+        ["lex.uz dan amaldagi qonunchilikni tekshiring", "4-mavzudagi tashkiliy-huquqiy shakllar jadvalidan foydalaning"]),
     [mustaqil("MT28", "Inflyatsiya, kredit foizlari va boshqa iqtisodiy omillarning biznes faoliyatiga ta'sirini tahlil qilish",
         "cbu.uz va stat.uz ma'lumotlari asosida so'nggi yildagi inflyatsiya va asosiy stavka darajasini aniqlang hamda ular o'z biznesingiz xarajatlari va narxlariga qanday ta'sir qilishini hisob bilan ko'rsating.")])
 
@@ -231,7 +255,7 @@ T13 = lesson("13", "Biznes-reja tuzish va mahsulotni tashqi bozorga olib chiqish
                            {"title": "Mijoz va bozor", "body": "A6, A7: biznes-model, segmentlar, mijoz portreti, bozor hajmi, raqobatchilar."},
                            {"title": "Marketing va savdo", "body": "A8, A9: kanallar, kontent-reja, savdo voronkasi, e'tirozlar bilan ishlash."},
                            {"title": "Huquqiy shakl va soliq", "body": "A4, A5: tashkiliy-huquqiy shakl, soliq rejimi, hujjatlar."},
-                           {"title": "Moliyaviy reja", "body": "A3, A10, A11, A12: xarajatlar, narx, zararsizlik nuqtasi, pul oqimi, foyda-zarar, moliyalashtirish."},
+                           {"title": "Moliyaviy reja", "body": "A3, A10, A12: xarajatlar, narx, zararsizlik nuqtasi, pul oqimi, foyda-zarar, moliyalashtirish."},
                            {"title": "Xavflar", "body": "A14 tayyorgarligi: asosiy 5 ta xavf va choralar."},
                            {"title": "Rezyume", "body": "Oxirida 1 sahifalik rezyume yozing: muammo, yechim, bozor, raqamlar, kerakli mablag'."}],
                  "questions": ["Biznesingizning zararsizlik nuqtasi va qoplanish muddati qancha?", "Bank (yoki investor) sizning rejangizdan nima uchun moliyalashtirishi kerak?", "Tashqi bozorga chiqish imkoniyati bormi? Qaysi bozor va qanday kanal?"],
@@ -402,5 +426,5 @@ T15 = lesson("15", "Biznes g'oyani taqdim etish va tadbirkorlik yo'lini boshlash
     [])
 
 MODULE5 = {"title": "5-bo'lim. Moliya, biznes-reja, jamoa va taqdimot",
-           "description": "Pul oqimi, foyda-zarar tahlili, biznes-reja, tashqi bozor, jamoa va xavflar, pitch va tadbirkorlik etikasi (M11–M15, A11–A15).",
+           "description": "Tadbirkorlik shakllari, foyda-zarar tahlili, biznes-reja, tashqi bozor, jamoa va xavflar, pitch va tadbirkorlik etikasi (M11–M15, A11–A15).",
            "lessons": [T11, T12, T13, T14, T15]}

@@ -123,17 +123,9 @@ EXTRA = {
     S("Talab, vaqt va zaxiraga qarab o'zgaradigan narx qanday ataladi?", ["Psixologik narx", "Dinamik narx", "Kirish narxi", "Paket narxi"], 1, "Masalan, kechki soatlarda pishiriqlarga chegirma."),
     S("Uchinchi, ataylab noqulay variant o'rtadagi variantni jozibali qilishi qanday effekt?", ["Langar", "Aldov varianti (decoy)", "Bepul effekti", "Yo'qotishdan qo'rqish"], 1, "Masalan: kichik 20, o'rta 28, katta 30 ming."),
   ],
-  11: [
-    S("Foyda bilan pul oqimining asosiy farqi nimada?", ["Ular bir xil", "Foyda — hisoblangan natija, pul oqimi — real kirim va chiqim", "Pul oqimi faqat bankda bo'ladi", "Foyda faqat yil oxirida hisoblanadi"], 1, "Mijoz qarzi, uskuna xaridi va kredit qaytarish ikkalasini farqlaydi."),
-    S("Kassa uzilishi (cash gap) nima?", ["Kassa apparatining buzilishi", "Ma'lum davrda to'lovlar uchun pul yetishmay qolishi", "Soliq qarzi", "Bank hisobvarag'ining yopilishi"], 1, "Foydali biznesda ham kirim kechiksa kassa uzilishi bo'ladi."),
-    S("Mahsulot uchun to'lov 30 kundan keyin olinadigan shart (Net-30) pul oqimiga qanday ta'sir qiladi?", ["Hech qanday ta'sir qilmaydi", "Kirimni kechiktiradi va aylanma mablag' ehtiyojini oshiradi", "Xarajatni kamaytiradi", "Soliqni kamaytiradi"], 1, "Eksport va B2B savdoda keng tarqalgan muammo."),
-    N("Oy boshidagi qoldiq 3 mln, kirimlar 12 mln, chiqimlar 14 mln so'm. Oy oxiridagi qoldiq necha mln so'm?", 1, "3 + 12 − 14 = 1 mln so'm.", 0.01),
-    M("Boshlang'ich kapital ehtiyojiga nimalar kiradi?", ["Uskuna va ta'mirlash", "Birinchi xomashyo zaxirasi", "Zararsizlikkacha bo'lgan oylarning xarajatlari (zaxira)", "Kelajakdagi sof foyda"], [0, 1, 2], "Biznes daromadga chiqquncha xarajatlarni ham qoplash kerak."),
-    S("Pul aylanish davri qisqarishi uchun nima qilish kerak?", ["Zaxirani ko'paytirish", "Mijozlardan to'lovni tezlashtirish va zaxirani kamaytirish", "Yetkazib beruvchiga oldindan to'lash", "Kredit olish"], 1, "Debitorlik va zaxira qancha qisqa bo'lsa, pul tezroq qaytadi."),
-    S("Bank suhbati uchun moliyaviy rejaning asosiy elementi qaysi?", ["Logotip", "12 oylik pul oqimi jadvali va kredit qaytarish manbai", "Xodimlar ro'yxati", "Raqobatchilar logotiplari"], 1, "Bank kreditni pul oqimidan qaytarish imkoniyatiga qaraydi."),
-    TF("Kreditning asosiy qarzini qaytarish foyda va zarar hisobotida xarajat sifatida aks etadi.", False, "Asosiy qarz to'lovi pul oqimiga ta'sir qiladi, lekin xarajat emas; foiz esa xarajat."),
-  ],
   12: [
+    S("Kassa uzilishi (cash gap) nima?", ["Kassa apparatining buzilishi", "Ma'lum davrda to'lovlar uchun pul yetishmay qolishi", "Soliq qarzi", "Bank hisobvarag'ining yopilishi"], 1, "Foydali biznesda ham kirim kechiksa kassa uzilishi bo'ladi."),
+    TF("Kreditning asosiy qarzini qaytarish foyda va zarar hisobotida xarajat sifatida aks etadi.", False, "Asosiy qarz to'lovi pul oqimiga ta'sir qiladi, lekin xarajat emas; foiz esa xarajat."),
     S("Balansning asosiy tengligi qaysi?", ["Tushum = Xarajat + Foyda", "Aktivlar = Majburiyatlar + O'z kapitali", "Foyda = Narx × Hajm", "Pul = Foyda"], 1, "Aktiv — nimaga egamiz, passiv — kimning pulidan."),
     S("LTV nimani bildiradi?", ["Mijozni jalb qilish narxi", "Mijozning butun hamkorlik davridagi yalpi foydasi", "Yillik tushum", "Kredit summasi"], 1, "LTV ÷ CAC ≥ 3 — sog'lom biznes-model."),
     N("Obuna 85 000 so'm/oy, yalpi marja 40%, mijoz o'rtacha 8 oy qoladi. LTV necha so'm?", 272000, "85 000 × 0,4 × 8 = 272 000 so'm.", 1),
@@ -175,7 +167,7 @@ EXTRA = {
   ],
 }
 
-# 11-mavzu (fan dasturi bo'yicha): "Tadbirkorlik faoliyati va uning shakllari" — alohida test
+# 11-mavzu: "Tadbirkorlik faoliyati va uning shakllari" testi (m5.py da asosiy test sifatida ishlatiladi)
 SHAKLLAR = [
   S("Tadbirkorlik faoliyati subyektlariga kimlar kiradi?", ["Faqat davlat korxonalari", "Ro'yxatdan o'tgan jismoniy shaxslar (YaTT, o'zini o'zi band) va yuridik shaxslar", "Faqat chet ellik investorlar", "Barcha fuqarolar ro'yxatsiz"], 1, "Subyekt bo'lish uchun davlat ro'yxatidan o'tish shart."),
   M("Mulkchilik shakllari bo'yicha tadbirkorlik turlarini belgilang.", ["Xususiy", "Jamoa", "Davlat", "Aralash (qo'shma)"], [0, 1, 2, 3], "Mulk kimga tegishli ekaniga qarab to'rt tur ajratiladi."),
